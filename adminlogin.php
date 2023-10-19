@@ -2,6 +2,10 @@
 include "db.php";
 
 session_start();
+if (isset($_SESSION['id'])) {
+    header('Location: adminprofile.php');
+    exit();
+}
 if (isset($_COOKIE['adminid']) && isset($_COOKIE['adminpassword'])) {
     $adminid = $_COOKIE['adminid'];
     $adminpassword = $_COOKIE['adminpassword'];

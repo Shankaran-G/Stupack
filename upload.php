@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'db.php';
 
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -7,56 +8,66 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['indexnumber'])) {
-        $indexnumber = $_POST['indexnumber'];
+if (isset($_FILES['csv_file'])) {
+    $file = $_FILES['csv_file'];
+    $file_name = $file['name'];
+    $file_tmp = $file['tmp_name'];
 
-        // Handle file upload
-        if (isset($_FILES['profile_photo'])) {
-            $file = $_FILES['profile_photo'];
-            $file_name = $file['name'];
-            $file_tmp = $file['tmp_name'];
+    $upload_directory = 'csvfiles/';
+    $file_path = $upload_directory . $file_name;
 
-            $upload_directory = 'uploads/';
+    if (move_uploaded_file($file_tmp, $file_path)) {
+        $db = new mysqli('localhost', 'root', '', 'stupack');
 
-            $file_path = $upload_directory . $file_name;
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $db = new mysqli('localhost', 'root', '', 'stupack');
-                $query = "SELECT indexnumber FROM stupackdetails WHERE indexnumber = ?";
-                $stmt = $db->prepare($query);
-                $stmt->bind_param('s', $indexnumber);
-                $stmt->execute();
-                $stmt->store_result();
-
-                if ($stmt->num_rows > 0) {
-                    $stmt->close();
-                    $update_query = "UPDATE stupackdetails SET profile_photo = ? WHERE indexnumber = ?";
-                    $update_stmt = $db->prepare($update_query);
-                    $update_stmt->bind_param('ss', $file_path, $indexnumber);
-                    $update_stmt->execute();
-                    $message = "Profile photo updated successfully.";
-                } else {
-                    $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
-                    $insert_stmt = $db->prepare($insert_query);
-                    $insert_stmt->bind_param('ss', $indexnumber, $file_path);
-                    $insert_stmt->execute();
-                    $message = "New record created with the profile photo.";
-                }
-
-                $db->close();
-                echo '<script type="text/javascript">';
-                echo 'alert("' . $message . '");';
-                echo 'window.location.href = "profile.php";';
-                echo '</script>';
-            } else {
-                echo '<script type="text/javascript">';
-                echo 'alert("Error uploading profile photo.");';
-                echo 'window.location.href = "upload.php";';
-                echo '</script>';
-            }
+        if ($db->connect_error) {
+            die("Connection failed: " . $db->connect_error);
         }
+
+        $queryCheckID = "SELECT id FROM lecdetails WHERE id = ?";
+        $stmtCheckID = $db->prepare($queryCheckID);
+
+        $queryInsert = "INSERT INTO lecdetails (id, fullname, name, password) VALUES (?, ?, ?, ?)";
+        $stmtInsert = $db->prepare($queryInsert);
+
+        if ($stmtCheckID && $stmtInsert) {
+            $handle = fopen($file_path, "r");
+            if ($handle !== FALSE) {
+                $firstRow = true; // Flag to identify the first row
+                while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                    if ($firstRow) {
+                        // Skip the first row
+                        $firstRow = false;
+                        continue;
+                    }
+                    $id = $data[0];
+
+                    // Check if ID already exists
+                    $stmtCheckID->bind_param('s', $id);
+                    $stmtCheckID->execute();
+                    $stmtCheckID->store_result();
+
+                    if ($stmtCheckID->num_rows == 0) {
+                        // ID is not in the database, insert the row
+                        $id = $data[0];
+                        $fullname = $data[1];
+                        $name = $data[2];
+                        $password = $data[3];
+
+                        $stmtInsert->bind_param('ssss', $id, $fullname, $name, $password);
+                        $stmtInsert->execute();
+                    }
+                }
+                fclose($handle);
+            }
+
+            $stmtCheckID->close();
+            $stmtInsert->close();
+        }
+
+        $db->close();
     }
 }
+
 ?>
 
 
@@ -70,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
+
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon" />
@@ -139,7 +151,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-align: center;
             padding: 10px;
         }
+
+        .upload {
+            border: 2px dashed black;
+            border-radius: 15px;
+            margin: 15px;
+            padding: 10px;
+            width: 80%;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0px 6px 15px black;
+        }
+
+        input {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0px 6px 15px black;
+            border: 1px solid grey;
+            padding: 8px;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -180,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
                     <h1 class="display-3 text-white animated slideInDown">
-                        Upload
+                        Acedemic Staff Details Upload
                     </h1>
                 </div>
             </div>
@@ -190,23 +222,147 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Testimonial Start -->
 
-    <div class="centered-form">
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <div class="form-field">
-                <label for="indexnumber">Index Number:</label>
-                <input type="text" name="indexnumber" id="indexnumber" required>
+    <!-- Service Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 1</h5>
+                            <p>Upload your Staff Details.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 2</h5>
+                            <p>Select CSV File From Your Device.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 3</h5>
+                            <p>The File Must be .CSV File Format</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 4</h5>
+                            <p>Avoid Repeat Records In The File.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-field">
-                <label for="profile_photo">Profile Photo:</label>
-                <input type="file" name="profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png" required>
-            </div>
-
-            <div class="form-field">
-                <input type="submit" name="submit" value="Upload">
-            </div>
-        </form>
+        </div>
     </div>
+
+    <!-- Service Start -->
+
+    <center>
+        <div class="upload">
+            <form action="upload.php" method="post" enctype="multipart/form-data">
+                <!-- Upload CSV File -->
+                <div class="form-field">
+                    <label for="csv_file">Upload CSV File: </label>
+                    <input type="file" name="csv_file" id="csv_file">
+                </div>
+
+                <!-- Submit CSV File Button -->
+                <div class="form-field">
+                    <input type="submit" name="submit_csv_file" value="Upload CSV File">
+                </div>
+            </form>
+
+        </div>
+    </center>
+
+
+    <div class="container my-5">
+        <?php
+        include 'db.php';
+        echo "<div class='container my-5'>";
+        echo "<div class='container text-center'>";
+        echo "<div class='row justify-content-center'>";
+        echo "<div class='col-lg-6'>";
+        echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
+        echo '<form method="post">';
+        echo '<button type="submit" name="get_details" class="btn btn-primary">Get Details</button>';
+        echo '</form>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+        if (isset($_POST['get_details'])) {
+            echo "<h4 class='my-4'>Lecturer Details</h4>";
+            echo "<table>";
+            echo "<tr class='text-primary'>
+            <th class='outtitle'>ID</th>
+            <th class='outtitle'>Full Name</th>
+            <th class='outtitle'>Name</th>
+            <th class='outtitle'>Password</th>
+            <th class='outtitle'>Change Data</th>
+        </tr>";
+
+            // SQL query to fetch data from lecdetails table
+            $query = "SELECT id, fullname, name, password FROM lecdetails";
+            $result = $conn->query($query);
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td class='showtitle'>" . $row['id'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['name'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['password'] . "</td>";
+                    echo "<td class='showtitle'>
+                    <form method='post'>
+                        <input type='hidden' name='change_id' value='" . $row['id'] . "'>
+                        <select name='change_column'>
+                            <option value='fullname'>Full Name</option>
+                            <option value='name'>Name</option>
+                            <option value='password'>Password</option>
+                        </select>
+                        <input type='text' name='new_data'>
+                        <button type='submit' name='update_data'>Update</button>
+                    </form>
+                </td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>No data found in the lecdetails table.</td></tr>";
+            }
+
+            echo "</table>";
+        }
+
+        if (isset($_POST['update_data'])) {
+            // Get the values from the form
+            $change_id = $_POST['change_id'];
+            $change_column = $_POST['change_column'];
+            $new_data = $_POST['new_data'];
+
+            // SQL query to update data in lecdetails table
+            $update_query = "UPDATE lecdetails SET $change_column = '$new_data' WHERE id = '$change_id'";
+            if ($conn->query($update_query) === TRUE) {
+                echo "Data updated successfully!";
+            } else {
+                echo "Error updating data: " . $conn->error;
+            }
+        }
+        ?>
+    </div>
+
     <!-- Testimonial End -->
 
     <!-- Footer Start -->

@@ -1,7 +1,13 @@
 <?php
 include "db.php";
-
 session_start();
+
+if (isset($_SESSION['id'])) {
+    header('Location: lecprofile.php');
+    exit();
+}
+
+
 if (isset($_COOKIE['remid']) && isset($_COOKIE['rempassword'])) {
     $rememberedid = $_COOKIE['remid'];
     $rememberedpassword = $_COOKIE['rempassword'];

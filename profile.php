@@ -25,6 +25,26 @@ if (!isset($_SESSION['indexnumber'])) {
   <meta content="" name="description" />
 
   <style>
+    .col-lg-9 {
+      padding: 8px;
+
+    }
+
+    /* Adjust the profile photo container */
+    .col-lg-3 {
+      text-align: center;
+    }
+
+    /* Style for the profile photo */
+    .col-lg-3 img {
+      max-width: 100%;
+    }
+
+
+
+
+
+
     .outtitle {
       font-size: 25px;
       /* Adjust the font size as needed */
@@ -33,6 +53,7 @@ if (!isset($_SESSION['indexnumber'])) {
       font-weight: bold;
       /* Add bold font-weight */
       margin: 20px 0;
+      margin-left: 20px;
       /* Add margin to create space around the element */
       font-family: 'Arial Black', sans-serif;
     }
@@ -43,6 +64,7 @@ if (!isset($_SESSION['indexnumber'])) {
       color: #124c64;
       /* Change the text color to your preference */
       font-weight: bold;
+      margin-left: 20px;
       /* Add bold font-weight */
       margin: 20px 0;
       /* Add margin to create space around the element */
@@ -133,7 +155,7 @@ if (!isset($_SESSION['indexnumber'])) {
   <section class="section">
     <div class="container">
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-3 order-first">
           <?php
           // Fetch the profile photo path for the user
           $indexnumber = $_SESSION['indexnumber'];
@@ -155,35 +177,37 @@ if (!isset($_SESSION['indexnumber'])) {
           mysqli_close($conn);
           ?>
         </div>
-        <?php
+        <div class="col-lg-9">
+          <?php
 
-        $indexnumber = $_SESSION['indexnumber'];
+          $indexnumber = $_SESSION['indexnumber'];
 
-        include 'db.php';
-        $sql = "SELECT * FROM stupackdetails WHERE indexnumber ='$indexnumber' ";
-        $result = mysqli_query($conn, $sql);
+          include 'db.php';
+          $sql = "SELECT * FROM stupackdetails WHERE indexnumber ='$indexnumber' ";
+          $result = mysqli_query($conn, $sql);
 
-        if (mysqli_num_rows($result) > 0) {
-          $row = mysqli_fetch_assoc($result);
-          // echo '<div class="col-lg-4 col-md-6">';
-          // echo '<div class="testimonial-box">';
-          echo '<p><strong class="outtitle"> Full Name: </strong><strong class="showtitle">' . $row["fullname"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Index Number: </strong><strong class="showtitle">' . $row["indexnumber"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Contact Number: </strong><strong class="showtitle">' . $row["contactnumber"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Date Of Birth: </strong><strong class="showtitle">' . $row["dob"] . '</p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> University Email: </strong><strong class="showtitle">' . $row["uniemail"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Department: </strong><strong class="showtitle">' . $row["department"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Batch Year: </strong><strong class="showtitle">' . $row["batchyear"] . '</strong></p>';
-          echo '<p class="testimonial-text"><strong class="outtitle"> Scholarship: </strong><strong class="showtitle">' . $row["scholarship"] . '</strong></p>';
-          // echo '<p class="testimonial-text">' . $row[""] . '</p>';
-          // echo '</div>';
-          // echo '</div>';
-        } else {
-          echo "No records found.";
-        }
+          if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            // echo '<div class="col-lg-4 col-md-6">';
+            // echo '<div class="testimonial-box">';
+            echo '<p><strong class="outtitle"> Full Name: </strong><strong class="showtitle">' . $row["fullname"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Index Number: </strong><strong class="showtitle">' . $row["indexnumber"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Contact Number: </strong><strong class="showtitle">' . $row["contactnumber"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Date Of Birth: </strong><strong class="showtitle">' . $row["dob"] . '</p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> University Email: </strong><strong class="showtitle">' . $row["uniemail"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Department: </strong><strong class="showtitle">' . $row["department"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Batch Year: </strong><strong class="showtitle">' . $row["batchyear"] . '</strong></p>';
+            echo '<p class="testimonial-text"><strong class="outtitle"> Scholarship: </strong><strong class="showtitle">' . $row["scholarship"] . '</strong></p>';
+            // echo '<p class="testimonial-text">' . $row[""] . '</p>';
+            // echo '</div>';
+            // echo '</div>';
+          } else {
+            echo "No records found.";
+          }
 
-        mysqli_close($conn);
-        ?>
+          mysqli_close($conn);
+          ?>
+        </div>
       </div>
     </div>
   </section>
@@ -192,7 +216,7 @@ if (!isset($_SESSION['indexnumber'])) {
 
 
   <!-- Footer Start -->
-  <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+  <div class=" container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
       <div class="row g-5">
         <div class="col-lg-3 col-md-6">

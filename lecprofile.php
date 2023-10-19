@@ -136,7 +136,6 @@ if (!isset($_SESSION['id'])) {
                 <?php
 
                 $id = $_SESSION['id'];
-
                 include 'db.php';
                 $sql = "SELECT * FROM lecdetails WHERE id ='$id' ";
                 $result = mysqli_query($conn, $sql);
