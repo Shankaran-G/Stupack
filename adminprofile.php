@@ -94,7 +94,13 @@ if (!isset($_SESSION['id'])) {
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="#" class="nav-item nav-link active">Profile</a>
                 <a href="adminresults.php" class="nav-item nav-link">Results</a>
-                <a href="upload.php" class="nav-item nav-link">Upload</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Uploads</a>
+                    <div class="dropdown-menu fade-down m-0">
+                        <a href="upload.php" class="dropdown-item">Staff Upload</a>
+                        <a href="studentupload.php" class="dropdown-item">Students Upload</a>
+                    </div>
+                </div>
                 <a href="mail.html" class="nav-item nav-link">Notification</a>
             </div>
             <form method="post" action="">

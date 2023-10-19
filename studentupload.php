@@ -15,63 +15,75 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-if (isset($_FILES['csv_file'])) {
-    $file = $_FILES['csv_file'];
-    $file_name = $file['name'];
-    $file_tmp = $file['tmp_name'];
+if (isset($_POST['submit_csv_file'])) { // Check if the form is submitted
+    if (isset($_FILES['csv_file'])) {
+        $file = $_FILES['csv_file'];
+        $file_name = $file['name'];
+        $file_tmp = $file['tmp_name'];
 
-    $upload_directory = 'csvfiles/';
-    $file_path = $upload_directory . $file_name;
+        $upload_directory = 'stuCsvfiles/';
+        $file_path = $upload_directory . $file_name;
 
-    if (move_uploaded_file($file_tmp, $file_path)) {
-        $db = new mysqli('localhost', 'root', '', 'stupack');
+        if (move_uploaded_file($file_tmp, $file_path)) {
+            $db = new mysqli('localhost', 'root', '', 'stupack'); // Update database credentials as needed
 
-        if ($db->connect_error) {
-            die("Connection failed: " . $db->connect_error);
-        }
-
-        $queryCheckID = "SELECT id FROM lecdetails WHERE id = ?";
-        $stmtCheckID = $db->prepare($queryCheckID);
-
-        $queryInsert = "INSERT INTO lecdetails (id, fullname, name, password) VALUES (?, ?, ?, ?)";
-        $stmtInsert = $db->prepare($queryInsert);
-
-        if ($stmtCheckID && $stmtInsert) {
-            $handle = fopen($file_path, "r");
-            if ($handle !== FALSE) {
-                $firstRow = true; // Flag to identify the first row
-                while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                    if ($firstRow) {
-                        // Skip the first row
-                        $firstRow = false;
-                        continue;
-                    }
-                    $id = $data[0];
-
-                    // Check if ID already exists
-                    $stmtCheckID->bind_param('s', $id);
-                    $stmtCheckID->execute();
-                    $stmtCheckID->store_result();
-
-                    if ($stmtCheckID->num_rows == 0) {
-                        // ID is not in the database, insert the row
-                        $id = $data[0];
-                        $fullname = $data[1];
-                        $name = $data[2];
-                        $password = $data[3];
-
-                        $stmtInsert->bind_param('ssss', $id, $fullname, $name, $password);
-                        $stmtInsert->execute();
-                    }
-                }
-                fclose($handle);
+            if ($db->connect_error) {
+                die("Connection failed: " . $db->connect_error);
             }
 
-            $stmtCheckID->close();
-            $stmtInsert->close();
-        }
+            $queryInsert = "INSERT INTO stupackdetails (indexnumber, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmtInsert = $db->prepare($queryInsert);
 
-        $db->close();
+            if ($stmtInsert) {
+                $handle = fopen($file_path, "r");
+                $firstRow = true; // To skip the first row
+
+                if ($handle !== FALSE) {
+                    while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                        if ($firstRow) {
+                            $firstRow = false; // Skip the first row
+                            continue;
+                        }
+
+                        $indexnumber = $data[0];
+
+                        // Check if the index number already exists in the database
+                        $checkQuery = "SELECT COUNT(*) as count FROM stupackdetails WHERE indexnumber = ?";
+                        $stmtCheck = $db->prepare($checkQuery);
+                        $stmtCheck->bind_param('s', $indexnumber);
+                        $stmtCheck->execute();
+                        $resultCheck = $stmtCheck->get_result();
+                        $stmtCheck->close();
+                        $rowCheck = $resultCheck->fetch_assoc();
+
+                        // If the index number doesn't exist, insert the row
+                        if ($rowCheck['count'] == 0) {
+                            $name = $data[1];
+                            $fullname = $data[2];
+                            $password = $data[3];
+                            $contactnumber = $data[4];
+                            $uniemail = $data[5];
+                            $address = $data[6];
+                            $dob = $data[7];
+                            $department = $data[8];
+                            $batchyear = $data[9];
+                            $scholarship = $data[10];
+
+                            $stmtInsert->bind_param('sssssssssss', $indexnumber, $name, $fullname, $password, $contactnumber, $uniemail, $address, $dob, $department, $batchyear, $scholarship);
+                            $stmtInsert->execute();
+                        }
+                    }
+                    fclose($handle);
+                }
+
+                $stmtInsert->close();
+                echo "Data inserted successfully!";
+            } else {
+                echo "Prepare statement error: " . $db->error;
+            }
+
+            $db->close();
+        }
     }
 }
 
@@ -129,21 +141,21 @@ if (isset($_FILES['csv_file'])) {
 
     <style>
         .outtitle {
-            font-size: 23px;
+            font-size: 18px;
             color: #181d38;
             font-weight: bold;
             margin: 20px 0;
         }
 
         .showtitle {
-            font-size: 20px;
+            font-size: 15px;
             color: #124c64;
             font-weight: bold;
             margin: 20px 0;
         }
 
         table {
-            width: 100%;
+            width: 50%;
             border-collapse: collapse;
         }
 
@@ -205,8 +217,8 @@ if (isset($_FILES['csv_file'])) {
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Uploads</a>
                     <div class="dropdown-menu fade-down m-0">
-                        <a href="upload.php" class="dropdown-item active">Staff Upload</a>
-                        <a href="studentupload.php" class="dropdown-item">Students Upload</a>
+                        <a href="upload.php" class="dropdown-item">Staff Upload</a>
+                        <a href="studentupload.php" class="dropdown-item active">Students Upload</a>
                     </div>
                 </div>
                 <a href="mail.html" class="nav-item nav-link">Notification</a>
@@ -226,7 +238,7 @@ if (isset($_FILES['csv_file'])) {
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
                     <h1 class="display-3 text-white animated slideInDown">
-                        Acedemic Staff Details Upload
+                        Student Details Upload
                     </h1>
                 </div>
             </div>
@@ -284,7 +296,7 @@ if (isset($_FILES['csv_file'])) {
 
     <center>
         <div class="upload">
-            <form action="upload.php" method="post" enctype="multipart/form-data">
+            <form action="studentupload.php" method="post" enctype="multipart/form-data">
                 <!-- Upload CSV File -->
                 <div class="form-field">
                     <label for="csv_file">Upload CSV File: </label>
@@ -296,7 +308,6 @@ if (isset($_FILES['csv_file'])) {
                     <input type="submit" name="submit_csv_file" value="Upload CSV File">
                 </div>
             </form>
-
         </div>
     </center>
 
@@ -310,51 +321,72 @@ if (isset($_FILES['csv_file'])) {
         echo "<div class='col-lg-6'>";
         echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
         echo '<form method="post">';
-        echo '<button type="submit" name="get_details" class="btn btn-primary">Get Details</button>';
+        echo '<button type="submit" name="getdetails" class="btn btn-primary">Get Details</button>';
         echo '</form>';
         echo '</div>';
         echo '</div>';
         echo '</div>';
         echo '</div>';
 
-        if (isset($_POST['get_details'])) {
-            echo "<h4 class='my-4'>Lecturer Details</h4>";
+        if (isset($_POST['getdetails'])) {
+            echo "<h4 class='my-4'>Student Details</h4>";
             echo "<table>";
             echo "<tr class='text-primary'>
-            <th class='outtitle'>ID</th>
-            <th class='outtitle'>Full Name</th>
-            <th class='outtitle'>Name</th>
-            <th class='outtitle'>Password</th>
-            <th class='outtitle'>Change Data</th>
-        </tr>";
+                <th class='outtitle'>ID</th>
+                <th class='outtitle'>Full Name</th>
+                <th class='outtitle'>Name</th>
+                <th class='outtitle'>Password</th>
+                <th class='outtitle'>Contact Number</th>
+                <th class='outtitle'>University Email</th>
+                <th class='outtitle'>Address</th>
+                <th class='outtitle'>Date of Birth</th>
+                <th class='outtitle'>Department</th>
+                <th class='outtitle'>Batch Year</th>
+                <th class='outtitle'>Scholarship</th>
+                <th class='outtitle'>Update Data</th>
+            </tr>";
 
-            // SQL query to fetch data from lecdetails table
-            $query = "SELECT id, fullname, name, password FROM lecdetails";
+            // SQL query to fetch data from stupackdetails table
+            $query = "SELECT indexnumber, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship FROM stupackdetails";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
-                    echo "<td class='showtitle'>" . $row['id'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['indexnumber'] . "</td>";
                     echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
                     echo "<td class='showtitle'>" . $row['name'] . "</td>";
                     echo "<td class='showtitle'>" . $row['password'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['contactnumber'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['uniemail'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['address'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['dob'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['department'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['batchyear'] . "</td>";
+                    echo "<td class='showtitle'>" . $row['scholarship'] . "</td>";
                     echo "<td class='showtitle'>
-                    <form method='post'>
-                        <input type='hidden' name='change_id' value='" . $row['id'] . "'>
-                        <select name='change_column'>
-                            <option value='fullname'>Full Name</option>
-                            <option value='name'>Name</option>
-                            <option value='password'>Password</option>
-                        </select>
-                        <input type='text' name='new_data'>
-                        <button type='submit' name='update_data'>Update</button>
-                    </form>
-                </td>";
+                        <form method='post'>
+                            <input type='hidden' name='change_indexnumber' value='" . $row['indexnumber'] . "'>
+                            <select name='change_column'>
+                                <option value='name'>Name</option>
+                                <option value='fullname'>Full Name</option>
+                                <option value='password'>Password</option>
+                                <option value='contactnumber'>Contact Number</option>
+                                <option value='uniemail'>University Email</option>
+                                <option value='address'>Address</option>
+                                <option value='dob'>Date of Birth</option>
+                                <option value='department'>Department</option>
+                                <option value='batchyear'>Batch Year</option>
+                                <option value='scholarship'>Scholarship</option>
+                            </select>
+                            <input type='text' name='new_data'>
+                            <button type='submit' name='update_data'>Update</button>
+                        </form>
+                    </td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='5'>No data found in the lecdetails table.</td></tr>";
+                echo "<tr><td colspan='12'>No data found in the stupackdetails table.</td></tr>";
             }
 
             echo "</table>";
@@ -362,20 +394,27 @@ if (isset($_FILES['csv_file'])) {
 
         if (isset($_POST['update_data'])) {
             // Get the values from the form
-            $change_id = $_POST['change_id'];
+            $change_indexnumber = $_POST['change_indexnumber'];
             $change_column = $_POST['change_column'];
             $new_data = $_POST['new_data'];
 
-            // SQL query to update data in lecdetails table
-            $update_query = "UPDATE lecdetails SET $change_column = '$new_data' WHERE id = '$change_id'";
-            if ($conn->query($update_query) === TRUE) {
-                echo "Data updated successfully!";
-            } else {
-                echo "Error updating data: " . $conn->error;
+            // SQL query to update data in stupackdetails table
+            $update_query = "UPDATE stupackdetails SET $change_column = ? WHERE indexnumber = ?";
+            $stmtUpdate = $conn->prepare($update_query);
+
+            if ($stmtUpdate) {
+                $stmtUpdate->bind_param('ss', $new_data, $change_indexnumber);
+                if ($stmtUpdate->execute()) {
+                    echo "Data updated successfully!";
+                } else {
+                    echo "Error updating data: " . $stmtUpdate->error;
+                }
+                $stmtUpdate->close();
             }
         }
         ?>
     </div>
+
 
     <!-- Testimonial End -->
 
