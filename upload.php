@@ -11,7 +11,7 @@ if (isset($_POST['logout'])) {
 }
 
 if (!isset($_SESSION['id'])) {
-    header('Location: adminlogin.php'); // Redirect to the login page if not logged in
+    header('Location: adminlogin.php');
     exit();
 }
 
@@ -75,6 +75,79 @@ if (isset($_FILES['csv_file'])) {
     }
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['id'])) {
+        $id = $_POST['id'];
+
+        // Handle file upload
+        if (isset($_FILES['profile_photo'])) {
+            $file = $_FILES['profile_photo'];
+            $file_name = $file['name'];
+            $file_tmp = $file['tmp_name'];
+
+            $upload_directory = 'acdemicuploads/';
+            $file_path = $upload_directory . $file_name;
+
+
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $db = new mysqli('localhost', 'root', '', 'stupack');
+                $query = "SELECT id FROM lecdetails WHERE id = ?";
+                $stmt = $db->prepare($query);
+                $stmt->bind_param('s', $id);
+                $stmt->execute();
+                $stmt->store_result();
+
+                if (!empty($existingPhotoPath)) {
+                    // Display the existing profile photo
+                    echo '<img src="' . $existingPhotoPath . '" alt="Profile Photo" style="max-width: 200px;" /><br>';
+
+                    // Provide a delete button
+                    echo '<form method="post" action="upload.php">';
+                    echo '<input type="hidden" name="id" value="' . $id . '">';
+                    echo '<input type="hidden" name="delete_existing" value="true">';
+                    echo '<button type="submit" name="delete" class="btn btn-danger">Delete Existing Photo</button>';
+                    echo '</form>';
+                }
+
+                if (isset($_POST['delete_existing'])) {
+                    // User wants to delete the existing photo
+                    unlink($existingPhotoPath); // Delete the file from the server
+                    $stmt->close();
+                    // Continue with the rest of the code to handle the file upload
+                } else {
+                    // Continue with the rest of the code to handle the file upload
+                }
+
+                if ($stmt->num_rows > 0) {
+                    $stmt->close();
+                    $update_query = "UPDATE lecdetails SET profile_photo = ? WHERE id = ?";
+                    $update_stmt = $db->prepare($update_query);
+                    $update_stmt->bind_param('ss', $file_path, $id);
+                    $update_stmt->execute();
+                    //$message = "Profile photo updated successfully.";
+                } else {
+                    // $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
+                    // $insert_stmt = $db->prepare($insert_query);
+                    // $insert_stmt->bind_param('ss', $indexnumber, $file_path);
+                    // $insert_stmt->execute();
+                    // //$message = "New record created with the profile photo.";
+                }
+
+                $db->close();
+                // echo '<script type="text/javascript">';
+                // echo 'alert("' . $message . '");';
+                // echo 'window.location.href = "profile.php";';
+                // echo '</script>';
+            } else {
+                echo '<script type="text/javascript">';
+                echo 'alert("Error uploading profile photo.");';
+                echo 'window.location.href = "upload.php";';
+                echo '</script>';
+            }
+        }
+    }
+}
+
 ?>
 
 
@@ -96,7 +169,9 @@ if (isset($_FILES['csv_file'])) {
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet" />
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
@@ -183,7 +258,8 @@ if (isset($_FILES['csv_file'])) {
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -203,7 +279,7 @@ if (isset($_FILES['csv_file'])) {
                 <a href="adminprofile.php" class="nav-item nav-link">Profile</a>
                 <a href="adminresults.php" class="nav-item nav-link">Results</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Uploads</a>
+                    <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Uploads</a>
                     <div class="dropdown-menu fade-down m-0">
                         <a href="upload.php" class="dropdown-item active">Staff Upload</a>
                         <a href="studentupload.php" class="dropdown-item">Students Upload</a>
@@ -212,7 +288,8 @@ if (isset($_FILES['csv_file'])) {
                 <a href="mail.html" class="nav-item nav-link">Notification</a>
 
                 <form method="post" action="">
-                    <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out <i class="fa fa-arrow-left ms-3"></i></button>
+                    <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out
+                        <i class="fa fa-arrow-left ms-3"></i></button>
                 </form>
             </div>
         </div>
@@ -237,7 +314,7 @@ if (isset($_FILES['csv_file'])) {
     <!-- Testimonial Start -->
 
     <!-- Service Start -->
-    <div class="container-xxl py-5">
+    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -281,46 +358,157 @@ if (isset($_FILES['csv_file'])) {
     </div>
 
     <!-- Service Start -->
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div class="upload">
+                <form action="upload.php" method="post" enctype="multipart/form-data">
+                    <!-- Upload CSV File -->
+                    <div class="form-field">
+                        <label for="csv_file">Upload CSV File: </label>
+                        <input type="file" name="csv_file" id="csv_file">
+                    </div>
 
-    <center>
-        <div class="upload">
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-                <!-- Upload CSV File -->
-                <div class="form-field">
-                    <label for="csv_file">Upload CSV File: </label>
-                    <input type="file" name="csv_file" id="csv_file">
+                    <!-- Submit CSV File Button -->
+                    <div class="form-field">
+                        <input type="submit" name="submit_csv_file" value="Upload CSV File">
+                    </div>
+                </form>
+
+            </div>
+        </center>
+    </div>
+    <br />
+    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 5</h5>
+                            <p>Upload Staff Profile Image.</p>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Submit CSV File Button -->
-                <div class="form-field">
-                    <input type="submit" name="submit_csv_file" value="Upload CSV File">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 6</h5>
+                            <p>Select Profile Picture From Device.</p>
+                        </div>
+                    </div>
                 </div>
-            </form>
-
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 7</h5>
+                            <p>The Formats Are .jpg, .jpeg, .png</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 8</h5>
+                            <p>Avoid Not Clear Image.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </center>
+    </div>
 
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div class="upload">
+                <form action="upload.php" method="post" enctype="multipart/form-data">
+                    <div class="form-field">
+                        <label for="id">Id:</label>
+                        <input type="text" name="id" id="id" required>
+                    </div>
 
-    <div class="container my-5">
-        <?php
-        include 'db.php';
-        echo "<div class='container my-5'>";
-        echo "<div class='container text-center'>";
-        echo "<div class='row justify-content-center'>";
-        echo "<div class='col-lg-6'>";
-        echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
-        echo '<form method="post">';
-        echo '<button type="submit" name="get_details" class="btn btn-primary">Get Details</button>';
-        echo '</form>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+                    <!-- Upload Profile Photo -->
+                    <div class="form-field">
+                        <label for="profile_photo">Profile Photo:</label>
+                        <input type="file" name="profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png" required>
+                    </div>
 
-        if (isset($_POST['get_details'])) {
-            echo "<h4 class='my-4'>Lecturer Details</h4>";
-            echo "<table>";
-            echo "<tr class='text-primary'>
+                    <!-- Submit Profile Photo Button -->
+                    <div class="form-field">
+                        <input type="submit" name="submit_profile_photo" value="Upload Profile Photo">
+                    </div>
+                </form>
+            </div>
+        </center>
+    </div>
+
+    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 9</h5>
+                            <p>Click Get Details To Get Student Records.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 10</h5>
+                            <p>Check The Records And Find Any Mistake Update Them.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 11</h5>
+                            <p>Select The Field then Fill The Update Value Then Submit.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 12</h5>
+                            <p>Change The Profile Picture By Reupload.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container my-5">
+            <?php
+            include 'db.php';
+            echo "<div class='container my-5'>";
+            echo "<div class='container text-center'>";
+            echo "<div class='row justify-content-center'>";
+            echo "<div class='col-lg-6'>";
+            echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
+            echo '<form method="post">';
+            echo '<button type="submit" name="get_details" class="btn btn-primary">Get Details</button>';
+            echo '</form>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+
+            if (isset($_POST['get_details'])) {
+                echo "<h4 class='my-4'>Lecturer Details</h4>";
+                echo "<table>";
+                echo "<tr class='text-primary'>
             <th class='outtitle'>ID</th>
             <th class='outtitle'>Full Name</th>
             <th class='outtitle'>Name</th>
@@ -328,18 +516,18 @@ if (isset($_FILES['csv_file'])) {
             <th class='outtitle'>Change Data</th>
         </tr>";
 
-            // SQL query to fetch data from lecdetails table
-            $query = "SELECT id, fullname, name, password FROM lecdetails";
-            $result = $conn->query($query);
+                // SQL query to fetch data from lecdetails table
+                $query = "SELECT id, fullname, name, password FROM lecdetails";
+                $result = $conn->query($query);
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td class='showtitle'>" . $row['id'] . "</td>";
-                    echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
-                    echo "<td class='showtitle'>" . $row['name'] . "</td>";
-                    echo "<td class='showtitle'>" . $row['password'] . "</td>";
-                    echo "<td class='showtitle'>
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td class='showtitle'>" . $row['id'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['name'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['password'] . "</td>";
+                        echo "<td class='showtitle'>
                     <form method='post'>
                         <input type='hidden' name='change_id' value='" . $row['id'] . "'>
                         <select name='change_column'>
@@ -351,30 +539,31 @@ if (isset($_FILES['csv_file'])) {
                         <button type='submit' name='update_data'>Update</button>
                     </form>
                 </td>";
-                    echo "</tr>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='5'>No data found in the lecdetails table.</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='5'>No data found in the lecdetails table.</td></tr>";
+
+                echo "</table>";
             }
 
-            echo "</table>";
-        }
+            if (isset($_POST['update_data'])) {
+                // Get the values from the form
+                $change_id = $_POST['change_id'];
+                $change_column = $_POST['change_column'];
+                $new_data = $_POST['new_data'];
 
-        if (isset($_POST['update_data'])) {
-            // Get the values from the form
-            $change_id = $_POST['change_id'];
-            $change_column = $_POST['change_column'];
-            $new_data = $_POST['new_data'];
-
-            // SQL query to update data in lecdetails table
-            $update_query = "UPDATE lecdetails SET $change_column = '$new_data' WHERE id = '$change_id'";
-            if ($conn->query($update_query) === TRUE) {
-                echo "Data updated successfully!";
-            } else {
-                echo "Error updating data: " . $conn->error;
+                // SQL query to update data in lecdetails table
+                $update_query = "UPDATE lecdetails SET $change_column = '$new_data' WHERE id = '$change_id'";
+                if ($conn->query($update_query) === TRUE) {
+                    echo "Data updated successfully!";
+                } else {
+                    echo "Error updating data: " . $conn->error;
+                }
             }
-        }
-        ?>
+            ?>
+        </div>
     </div>
 
     <!-- Testimonial End -->
@@ -404,10 +593,14 @@ if (isset($_FILES['csv_file'])) {
                         <i class="fa fa-envelope me-3"></i>stupack@example.com
                     </p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href="https://twitter.com/"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://twitter.com/"><i
+                                class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.youtube.com/"><i
+                                class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/"><i
+                                class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -437,7 +630,8 @@ if (isset($_FILES['csv_file'])) {
                     <h4 class="text-white mb-3">Comments</h4>
                     <p>If you have any comments feel free to tell.</p>
                     <div class="position-relative mx-auto" style="max-width: 400px">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
+                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
+                            placeholder="Your email" />
                         <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
                             Submit
                         </button>
