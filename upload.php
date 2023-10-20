@@ -33,7 +33,7 @@ if (isset($_FILES['csv_file'])) {
         $queryCheckID = "SELECT id FROM lecdetails WHERE id = ?";
         $stmtCheckID = $db->prepare($queryCheckID);
 
-        $queryInsert = "INSERT INTO lecdetails (id, fullname, name, password) VALUES (?, ?, ?, ?)";
+        $queryInsert = "INSERT INTO lecdetails (id, fullname, name, password, email) VALUES (?, ?, ?, ?, ?)";
         $stmtInsert = $db->prepare($queryInsert);
 
         if ($stmtCheckID && $stmtInsert) {
@@ -59,9 +59,12 @@ if (isset($_FILES['csv_file'])) {
                         $fullname = $data[1];
                         $name = $data[2];
                         $password = $data[3];
+                        $email = $data[4];
 
-                        $stmtInsert->bind_param('ssss', $id, $fullname, $name, $password);
+
+                        $stmtInsert->bind_param('sssss', $id, $fullname, $name, $password, $email);
                         $stmtInsert->execute();
+                        echo 'Insert Succussfully';
                     }
                 }
                 fclose($handle);
@@ -126,11 +129,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $update_stmt->execute();
                     //$message = "Profile photo updated successfully.";
                 } else {
-                    // $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
-                    // $insert_stmt = $db->prepare($insert_query);
-                    // $insert_stmt->bind_param('ss', $indexnumber, $file_path);
-                    // $insert_stmt->execute();
-                    // //$message = "New record created with the profile photo.";
+                    $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
+                    $insert_stmt = $db->prepare($insert_query);
+                    $insert_stmt->bind_param('ss', $indexnumber, $file_path);
+                    $insert_stmt->execute();
+                    $message = "New record created with the profile photo.";
                 }
 
                 $db->close();
@@ -513,11 +516,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th class='outtitle'>Full Name</th>
             <th class='outtitle'>Name</th>
             <th class='outtitle'>Password</th>
+            <th class='outtitle'>Email</th>
             <th class='outtitle'>Change Data</th>
         </tr>";
 
                 // SQL query to fetch data from lecdetails table
-                $query = "SELECT id, fullname, name, password FROM lecdetails";
+                $query = "SELECT id, fullname, name, password, email FROM lecdetails";
                 $result = $conn->query($query);
 
                 if ($result->num_rows > 0) {
@@ -527,6 +531,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
                         echo "<td class='showtitle'>" . $row['name'] . "</td>";
                         echo "<td class='showtitle'>" . $row['password'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['email'] . "</td>";
                         echo "<td class='showtitle'>
                     <form method='post'>
                         <input type='hidden' name='change_id' value='" . $row['id'] . "'>
@@ -534,6 +539,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <option value='fullname'>Full Name</option>
                             <option value='name'>Name</option>
                             <option value='password'>Password</option>
+                            <option value='email'>Email</option>
                         </select>
                         <input type='text' name='new_data'>
                         <button type='submit' name='update_data'>Update</button>

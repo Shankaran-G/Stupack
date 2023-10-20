@@ -14,78 +14,6 @@ if (!isset($_SESSION['id'])) {
     header('Location: adminlogin.php'); // Redirect to the login page if not logged in
     exit();
 }
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['indexnumber'])) {
-        $indexnumber = $_POST['indexnumber'];
-
-        // Handle file upload
-        if (isset($_FILES['profile_photo'])) {
-            $file = $_FILES['profile_photo'];
-            $file_name = $file['name'];
-            $file_tmp = $file['tmp_name'];
-
-            $upload_directory = 'uploads/';
-
-            $file_path = $upload_directory . $file_name;
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $db = new mysqli('localhost', 'root', '', 'stupack');
-                $query = "SELECT indexnumber FROM stupackdetails WHERE indexnumber = ?";
-                $stmt = $db->prepare($query);
-                $stmt->bind_param('s', $indexnumber);
-                $stmt->execute();
-                $stmt->store_result();
-
-                if (!empty($existingPhotoPath)) {
-                    // Display the existing profile photo
-                    echo '<img src="' . $existingPhotoPath . '" alt="Profile Photo" style="max-width: 200px;" /><br>';
-
-                    // Provide a delete button
-                    echo '<form method="post" action="upload.php">';
-                    echo '<input type="hidden" name="indexnumber" value="' . $indexnumber . '">';
-                    echo '<input type="hidden" name="delete_existing" value="true">';
-                    echo '<button type="submit" name="delete" class="btn btn-danger">Delete Existing Photo</button>';
-                    echo '</form>';
-                }
-
-                if (isset($_POST['delete_existing'])) {
-                    // User wants to delete the existing photo
-                    unlink($existingPhotoPath); // Delete the file from the server
-                    $stmt->close();
-                    // Continue with the rest of the code to handle the file upload
-                } else {
-                    // Continue with the rest of the code to handle the file upload
-                }
-
-                if ($stmt->num_rows > 0) {
-                    $stmt->close();
-                    $update_query = "UPDATE stupackdetails SET profile_photo = ? WHERE indexnumber = ?";
-                    $update_stmt = $db->prepare($update_query);
-                    $update_stmt->bind_param('ss', $file_path, $indexnumber);
-                    $update_stmt->execute();
-                    //$message = "Profile photo updated successfully.";
-                } else {
-                    // $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
-                    // $insert_stmt = $db->prepare($insert_query);
-                    // $insert_stmt->bind_param('ss', $indexnumber, $file_path);
-                    // $insert_stmt->execute();
-                    // //$message = "New record created with the profile photo.";
-                }
-
-                $db->close();
-                // echo '<script type="text/javascript">';
-                // echo 'alert("' . $message . '");';
-                // echo 'window.location.href = "profile.php";';
-                // echo '</script>';
-            } else {
-                echo '<script type="text/javascript">';
-                echo 'alert("Error uploading profile photo.");';
-                echo 'window.location.href = "upload.php";';
-                echo '</script>';
-            }
-        }
-    }
-}
 ?>
 
 
@@ -400,8 +328,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     ?>
     <!-- END Upload Details CSV -->
+
     <br />
-    <!-- Upload Profile CSV -->
+
+    <!-- Upload Profile Image -->
     <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
         <div class="container">
             <div class="row g-4">
@@ -447,19 +377,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div class="upload">
-                <form action="studentupload.php" method="post">
+                <form action="studentupload.php" method="post" enctype="multipart/form-data">
                     <div class="form-field">
                         <label for="indexnumber">Index Number:</label>
                         <input type="text" name="indexnumber" id="indexnumber" required>
                     </div>
 
-                    <!-- Upload Profile Photo -->
+
                     <div class="form-field">
                         <label for="profile_photo">Profile Photo:</label>
-                        <input type="file" name="profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png" required>
+                        <input type="file" name="submit_profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png"
+                            required>
                     </div>
 
-                    <!-- Submit Profile Photo Button -->
+
                     <div class="form-field">
                         <input type="submit" name="submit_profile_photo" value="Upload Profile Photo">
                     </div>
@@ -467,7 +398,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </center>
     </div>
-    <!-- End Profile CSV -->
+    <?php
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_profile_photo'])) {
+        if (isset($_POST['indexnumber']) && isset($_FILES['submit_profile_photo'])) {
+            $indexnumber = $_POST['indexnumber'];
+            $file = $_FILES['submit_profile_photo'];
+            $file_name = $file['name'];
+            $file_tmp = $file['tmp_name'];
+
+            $upload_directory = 'uploads/';
+            $file_path = $upload_directory . $file_name;
+
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $db = new mysqli('localhost', 'root', '', 'stupack');
+                $query = "SELECT indexnumber FROM stupackdetails WHERE indexnumber = ?";
+                $stmt = $db->prepare($query);
+                $stmt->bind_param('s', $indexnumber);
+                $stmt->execute();
+                $stmt->store_result();
+
+                if ($stmt->num_rows > 0) {
+                    $stmt->close();
+                    $update_query = "UPDATE stupackdetails SET profile_photo = ? WHERE indexnumber = ?";
+                    $update_stmt = $db->prepare($update_query);
+                    $update_stmt->bind_param('ss', $file_path, $indexnumber);
+                    if ($update_stmt->execute()) {
+                        $message = "Profile photo updated successfully.";
+                    }
+                } else {
+                    $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
+                    $insert_stmt = $db->prepare($insert_query);
+                    $insert_stmt->bind_param('ss', $indexnumber, $file_path);
+                    if ($insert_stmt->execute()) {
+                        $message = "New record created with the profile photo.";
+                    }
+                }
+
+                $db->close();
+
+                echo '<script type="text/javascript">';
+                echo 'alert("' . $message . '");';
+                echo 'window.location.href = "studentupload.php";'; // Replace "studentlogin.php" with the actual URL of your student login page.
+                echo '</script>';
+
+            } else {
+                echo '<script type="text/javascript">';
+                echo 'alert("' . $message . '");';
+                echo 'window.location.href = "studentupload.php";'; // Replace "studentlogin.php" with the actual URL of your student login page.
+                echo '</script>';
+
+            }
+        }
+    }
+
+    ?>
+
+
+
+    <!-- End Profile Image -->
 
     <!-- Start Results CSV -->
     <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
@@ -478,7 +467,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 9</h5>
-                            <p>Upload Student Results .</p>
+                            <p>Upload Student Results From Device .</p>
                         </div>
                     </div>
                 </div>
@@ -487,7 +476,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 10</h5>
-                            <p>Select Results File From Device.</p>
+                            <p>The Upload Time Its Load The Page Just Refresh It.</p>
                         </div>
                     </div>
                 </div>
@@ -496,7 +485,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 11</h5>
-                            <p>The File Formats Must Be .CSV</p>
+                            <p>After Refresh You Get The Insertation Reply</p>
                         </div>
                     </div>
                 </div>
@@ -505,7 +494,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 12</h5>
-                            <p>Recheck The Resilts Before Insert.</p>
+                            <p>Recheck The ONseration By Click The Get Results.</p>
                         </div>
                     </div>
                 </div>
@@ -532,8 +521,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </center>
     </div>
     <?php
-
-    if (isset($_POST['submit_results_file'])) { // Check if the form is submitted
+    if (isset($_POST['submit_results_file'])) {
         if (isset($_FILES['result_file'])) {
             $file = $_FILES['result_file'];
             $file_name = $file['name'];
@@ -554,12 +542,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($stmtInsert) {
                     $handle = fopen($file_path, "r");
-                    $firstRow = true; // To skip the first row
-    
+                    $firstRow = true;
+                    $dataInserted = false;
+
                     if ($handle !== FALSE) {
                         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
                             if ($firstRow) {
-                                $firstRow = false; // Skip the first row
+                                $firstRow = false;
                                 continue;
                             }
 
@@ -573,7 +562,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $checkStmt->execute();
                             $checkStmt->store_result();
 
-
                             if ($checkStmt->num_rows == 0) {
                                 $indexnumber = $data[0];
                                 $semester = $data[1];
@@ -581,26 +569,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 $modulename = $data[3];
                                 $results = $data[4];
                                 $stmtInsert->bind_param('sssss', $indexnumber, $semester, $modulecode, $modulename, $results);
-                                $stmtInsert->execute();
-                                $stmtInsert->close();
-                                echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
-                            } else {
 
+                                if ($stmtInsert->execute()) {
+                                    $dataInserted = true;
+                                }
+
+                                $stmtInsert->close();
                             }
                             $checkStmt->close();
                         }
                         fclose($handle);
                     }
 
-
+                    if ($dataInserted) {
+                        echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
+                    } else {
+                        echo '<div style="text-align: center; margin-top: 20px;">No new data was inserted.</div>';
+                    }
                 }
 
                 $db->close();
+            } else {
+                echo '<div style="text-align: center; margin-top: 20px;">Error moving the uploaded file.</div>';
             }
+        } else {
+            echo '<div style="text-align: center; margin-top: 20px;">No file was uploaded.</div>';
         }
     }
-
     ?>
+
 
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <div class="container my-5">
