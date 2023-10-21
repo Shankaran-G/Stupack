@@ -211,7 +211,7 @@ if (!isset($_SESSION['indexnumber'])) {
   <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
       <div class="row g-5">
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
           <h4 class="text-white mb-3">Quick Link</h4>
           <a class="btn btn-link" href="about.html">About Us</a>
           <a class="btn btn-link" href="contact.html">Contact Us</a>
@@ -219,7 +219,7 @@ if (!isset($_SESSION['indexnumber'])) {
           <a class="btn btn-link" href="">Terms & Condition</a>
           <a class="btn btn-link" href="">FAQs & Help</a>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
           <h4 class="text-white mb-3">Contact</h4>
           <p class="mb-2">
             <i class="fa fa-map-marker-alt me-3"></i>Avengers building,
@@ -241,7 +241,7 @@ if (!isset($_SESSION['indexnumber'])) {
                 class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
           <h4 class="text-white mb-3">Gallery</h4>
           <div class="row g-2 pt-2">
             <div class="col-4">
@@ -264,16 +264,6 @@ if (!isset($_SESSION['indexnumber'])) {
             </div>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6">
-          <h4 class="text-white mb-3">Comments</h4>
-          <p>If you have any comments feel free to tell.</p>
-          <div class="position-relative mx-auto" style="max-width: 400px">
-            <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
-            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
-              Submit
-            </button>
-          </div>
-        </div>
       </div>
     </div>
     <div class="container">
@@ -281,10 +271,7 @@ if (!isset($_SESSION['indexnumber'])) {
         <div class="row">
           <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
             &copy; <a class="border-bottom" href="#">STUpack</a>, All Right
-            Reserved.
-
-            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-            Designed By
+            Reserved. Designed By
             <a class="border-bottom" href="https://htmlcodex.com">Avengers</a>
           </div>
         </div>

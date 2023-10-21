@@ -1,3 +1,5 @@
-indexnumber,name,fullname,password,contactnumber,uniemail,address,dob,department,batchyear,scholarship
-ict20001,Tony,Tony Potter,11111,123321456,ict20001@fot.sjp.ac.lk,Colombo,10.10.2000,Information communication Technology,2019/2020,Null
-ict20002,Peter,Peter Parker,55555,1212121212,ict20002@fot.sjp.ac.lk,Colombo,11.10.2000,Information communication Technology,2019/2020,Mahapola
+"indexnumber","name","fullname","password","contactnumber","uniemail","address","dob","department","batchyear","scholarship"
+"ict20001","Tony","Tony Potter","11111","123321456","ict20001@fot.sjp.ac.lk","Colombo","10.10.2000","Information communication Technology","2019/2020","Null"
+"ict20002","Peter","Peter Parker","55555","1212121212","ict20002@fot.sjp.ac.lk","Colombo","11.10.2000","Information communication Technology","2019/2020","Mahapola"
+"ict20003","Antony","Antony das","66666","2132432323","ict20003@fot.sjp.ac.lk","Kandy","12.10.2000","Engineering Technology","2019/2020","Bursary"
+"ict20004","Harlod","Harlod Das","77777","343212343","ict20004@fot.sjp.ac.lk","Kandy","13.10.2000","Engineering Technology","2019/2020","Bursary"

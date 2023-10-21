@@ -255,7 +255,7 @@ if (!isset($_SESSION['id'])) {
         </center>
     </div>
     <?php
-    if (isset($_POST['submit_csv_file'])) { // Check if the form is submitted
+    if (isset($_POST['submit_csv_file'])) {
         if (isset($_FILES['csv_file'])) {
             $file = $_FILES['csv_file'];
             $file_name = $file['name'];
@@ -265,8 +265,8 @@ if (!isset($_SESSION['id'])) {
             $file_path = $upload_directory . $file_name;
 
             if (move_uploaded_file($file_tmp, $file_path)) {
-                $db = new mysqli('localhost', 'root', '', 'stupack'); // Update database credentials as needed
-    
+                $db = new mysqli('localhost', 'root', '', 'stupack');
+
                 if ($db->connect_error) {
                     die("Connection failed: " . $db->connect_error);
                 }
@@ -276,18 +276,18 @@ if (!isset($_SESSION['id'])) {
 
                 if ($stmtInsert) {
                     $handle = fopen($file_path, "r");
-                    $firstRow = true; // To skip the first row
-    
+                    $firstRow = true;
+
                     if ($handle !== FALSE) {
                         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
                             if ($firstRow) {
-                                $firstRow = false; // Skip the first row
+                                $firstRow = false;
                                 continue;
                             }
 
                             $indexnumber = $data[0];
 
-                            // Check if the index number already exists in the database
+
                             $checkQuery = "SELECT COUNT(*) as count FROM stupackdetails WHERE indexnumber = ?";
                             $stmtCheck = $db->prepare($checkQuery);
                             $stmtCheck->bind_param('s', $indexnumber);
@@ -494,7 +494,7 @@ if (!isset($_SESSION['id'])) {
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 12</h5>
-                            <p>Recheck The ONseration By Click The Get Results.</p>
+                            <p>Recheck The Inseration By Click The Get Results.</p>
                         </div>
                     </div>
                 </div>
@@ -569,6 +569,7 @@ if (!isset($_SESSION['id'])) {
                                 $modulename = $data[3];
                                 $results = $data[4];
                                 $stmtInsert->bind_param('sssss', $indexnumber, $semester, $modulecode, $modulename, $results);
+
 
                                 if ($stmtInsert->execute()) {
                                     $dataInserted = true;
@@ -848,7 +849,7 @@ if (!isset($_SESSION['id'])) {
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Quick Link</h4>
                     <a class="btn btn-link" href="about.html">About Us</a>
                     <a class="btn btn-link" href="contact.html">Contact Us</a>
@@ -856,7 +857,7 @@ if (!isset($_SESSION['id'])) {
                     <a class="btn btn-link" href="">Terms & Condition</a>
                     <a class="btn btn-link" href="">FAQs & Help</a>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Contact</h4>
                     <p class="mb-2">
                         <i class="fa fa-map-marker-alt me-3"></i>Avengers building,
@@ -879,7 +880,7 @@ if (!isset($_SESSION['id'])) {
                                 class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Gallery</h4>
                     <div class="row g-2 pt-2">
                         <div class="col-4">
@@ -902,17 +903,6 @@ if (!isset($_SESSION['id'])) {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Comments</h4>
-                    <p>If you have any comments feel free to tell.</p>
-                    <div class="position-relative mx-auto" style="max-width: 400px">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text"
-                            placeholder="Your email" />
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
-                            Submit
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="container">
@@ -920,18 +910,15 @@ if (!isset($_SESSION['id'])) {
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
                         &copy; <a class="border-bottom" href="#">STUpack</a>, All Right
-                        Reserved.
-
-                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                        Designed By
+                        Reserved. Designed By
                         <a class="border-bottom" href="https://htmlcodex.com">Avengers</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Footer End -->
+
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

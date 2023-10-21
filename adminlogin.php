@@ -60,7 +60,9 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet" />
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
@@ -79,7 +81,8 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
             <span class="sr-only">Loading...</span>
         </div>
@@ -99,15 +102,19 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="index.html" class="nav-item nav-link">Home</a>
                 <a href="about.html" class="nav-item nav-link">About</a>
-                <a href="team.html" class="nav-item nav-link">Our Team</a>
+
                 <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
             <div class="dropdown" style="background-color: #06bbcc">
-                <a href="#" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block nav-link dropdown-toggle">Login Now<i></i></a>
+                <a href="#" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block nav-link dropdown-toggle">Login
+                    Now<i></i></a>
                 <div class="dropdown-menu fade-dowm m-0" style="background-color: #06bbcc; border: 2px solid #06bbcc">
-                    <a href="login.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block" style="color: rgb(255, 255, 255)">Login as student<i class="fa fa-arrow-right ms-3"></i></a>
-                    <a href="leclogin.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block" style="color: rgb(255, 255, 255)">Login as lecturer<i class="fa fa-arrow-right ms-3"></i></a>
-                    <a href="adminlogin.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block" style="color: rgb(255, 255, 255)">Login as Admin<i class="fa fa-arrow-right ms-3"></i></a>
+                    <a href="login.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block"
+                        style="color: rgb(255, 255, 255)">Login as student<i class="fa fa-arrow-right ms-3"></i></a>
+                    <a href="leclogin.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block"
+                        style="color: rgb(255, 255, 255)">Login as lecturer<i class="fa fa-arrow-right ms-3"></i></a>
+                    <a href="adminlogin.php" class="dropdown btn btn-primary py-4 px-lg-4 d-lg-block"
+                        style="color: rgb(255, 255, 255)">Login as Admin<i class="fa fa-arrow-right ms-3"></i></a>
                 </div>
             </div>
         </div>
@@ -139,10 +146,14 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
                     <p class="mb-4">Create your own way</p>
                     <form action="#" method="POST">
                         <div class="mb-3">
-                            <input type="text" name="id" id="id" class="form-control" placeholder="Use your University Identity Number" required value="<?php echo $adminid; ?>" />
+                            <input type="text" name="id" id="id" class="form-control"
+                                placeholder="Use your University Identity Number" required
+                                value="<?php echo $adminid; ?>" />
                         </div>
                         <div class="mb-3">
-                            <input type="password" name="password" class="form-control" placeholder="Use your Stupack Password" required value="<?php echo $adminpassword; ?>" />
+                            <input type="password" name="password" class="form-control"
+                                placeholder="Use your Stupack Password" required
+                                value="<?php echo $adminpassword; ?>" />
                         </div>
                         <div class="mb-4">
                             <label for="remember_me">Remember Me</label>
@@ -164,7 +175,7 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Quick Link</h4>
                     <a class="btn btn-link" href="about.html">About Us</a>
                     <a class="btn btn-link" href="contact.html">Contact Us</a>
@@ -172,7 +183,7 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
                     <a class="btn btn-link" href="">Terms & Condition</a>
                     <a class="btn btn-link" href="">FAQs & Help</a>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Contact</h4>
                     <p class="mb-2">
                         <i class="fa fa-map-marker-alt me-3"></i>Avengers building,
@@ -185,13 +196,17 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
                         <i class="fa fa-envelope me-3"></i>stupack@example.com
                     </p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href="https://twitter.com/"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://twitter.com/"><i
+                                class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.youtube.com/"><i
+                                class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/"><i
+                                class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Gallery</h4>
                     <div class="row g-2 pt-2">
                         <div class="col-4">
@@ -214,16 +229,6 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Comments</h4>
-                    <p>If you have any comments feel free to tell.</p>
-                    <div class="position-relative mx-auto" style="max-width: 400px">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">
-                            Submit
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="container">
@@ -231,9 +236,7 @@ if (isset($_POST['login_Btn']) && isset($_POST['id']) && isset($_POST['password'
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
                         &copy; <a class="border-bottom" href="#">STUpack</a>, All Right
-                        Reserved.
-
-                        Designed By
+                        Reserved. Designed By
                         <a class="border-bottom" href="https://htmlcodex.com">Avengers</a>
                     </div>
                 </div>
