@@ -271,7 +271,7 @@ if (!isset($_SESSION['id'])) {
                     die("Connection failed: " . $db->connect_error);
                 }
 
-                $queryInsert = "INSERT INTO stupackdetails (indexnumber, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $queryInsert = "INSERT INTO stupackdetails (indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmtInsert = $db->prepare($queryInsert);
 
                 if ($stmtInsert) {
@@ -298,18 +298,19 @@ if (!isset($_SESSION['id'])) {
 
                             // If the index number doesn't exist, insert the row
                             if ($rowCheck['count'] == 0) {
-                                $name = $data[1];
-                                $fullname = $data[2];
-                                $password = $data[3];
-                                $contactnumber = $data[4];
-                                $uniemail = $data[5];
-                                $address = $data[6];
-                                $dob = $data[7];
-                                $department = $data[8];
-                                $batchyear = $data[9];
-                                $scholarship = $data[10];
+                                $registration = $data[1];
+                                $name = $data[2];
+                                $fullname = $data[3];
+                                $password = $data[4];
+                                $contactnumber = $data[5];
+                                $uniemail = $data[6];
+                                $address = $data[7];
+                                $dob = $data[8];
+                                $department = $data[9];
+                                $batchyear = $data[10];
+                                $scholarship = $data[11];
 
-                                $stmtInsert->bind_param('sssssssssss', $indexnumber, $name, $fullname, $password, $contactnumber, $uniemail, $address, $dob, $department, $batchyear, $scholarship);
+                                $stmtInsert->bind_param('ssssssssssss', $indexnumber, $registration, $name, $fullname, $password, $contactnumber, $uniemail, $address, $dob, $department, $batchyear, $scholarship);
                                 $stmtInsert->execute();
                             }
                         }
@@ -738,7 +739,7 @@ if (!isset($_SESSION['id'])) {
     </div>
 
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container my-5">
+        <div class="container my-3">
             <?php
             include 'db.php';
             echo "<div class='container my-5'>";
@@ -760,6 +761,7 @@ if (!isset($_SESSION['id'])) {
                 echo "<tr class='text-primary'>
                 <th class='outtitle'>ID</th>
                 <th class='outtitle'>Full Name</th>
+                <th class='outtitle'>Registration No</th>
                 <th class='outtitle'>Name</th>
                 <th class='outtitle'>Password</th>
                 <th class='outtitle'>Contact Number</th>
@@ -773,7 +775,7 @@ if (!isset($_SESSION['id'])) {
             </tr>";
 
                 // SQL query to fetch data from stupackdetails table
-                $query = "SELECT indexnumber, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship FROM stupackdetails";
+                $query = "SELECT indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship FROM stupackdetails";
                 $result = $conn->query($query);
 
                 if ($result->num_rows > 0) {
@@ -781,6 +783,7 @@ if (!isset($_SESSION['id'])) {
                         echo "<tr>";
                         echo "<td class='showtitle'>" . $row['indexnumber'] . "</td>";
                         echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['registration'] . "</td>";
                         echo "<td class='showtitle'>" . $row['name'] . "</td>";
                         echo "<td class='showtitle'>" . $row['password'] . "</td>";
                         echo "<td class='showtitle'>" . $row['contactnumber'] . "</td>";
@@ -796,6 +799,7 @@ if (!isset($_SESSION['id'])) {
                             <select name='change_column'>
                                 <option value='name'>Name</option>
                                 <option value='fullname'>Full Name</option>
+                                <option value='registration'>Registration No</option>
                                 <option value='password'>Password</option>
                                 <option value='contactnumber'>Contact Number</option>
                                 <option value='uniemail'>University Email</option>

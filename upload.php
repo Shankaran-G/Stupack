@@ -516,12 +516,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th class='outtitle'>Full Name</th>
             <th class='outtitle'>Name</th>
             <th class='outtitle'>Password</th>
-            <th class='outtitle'>Email</th>
+            <th class='outtitle'>Contact Email</th>
+            <th class='outtitle'>Acedemic Department</th>
+            <th class='outtitle'>Research Interests</th>
+            <th class='outtitle'>Professional Experience</th>
+            <th class='outtitle'>Research Projects</th>
             <th class='outtitle'>Change Data</th>
         </tr>";
 
                 // SQL query to fetch data from lecdetails table
-                $query = "SELECT id, fullname, name, password, email FROM lecdetails";
+                $query = "SELECT id, fullname, name, password, email, acedemicdepartment, researchinterests, professionalexperience, researchprojects FROM lecdetails";
                 $result = $conn->query($query);
 
                 if ($result->num_rows > 0) {
@@ -532,6 +536,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "<td class='showtitle'>" . $row['name'] . "</td>";
                         echo "<td class='showtitle'>" . $row['password'] . "</td>";
                         echo "<td class='showtitle'>" . $row['email'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['acedemicdepartment'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['researchinterests'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['professionalexperience'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['researchprojects'] . "</td>";
                         echo "<td class='showtitle'>
                     <form method='post'>
                         <input type='hidden' name='change_id' value='" . $row['id'] . "'>
@@ -539,7 +547,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <option value='fullname'>Full Name</option>
                             <option value='name'>Name</option>
                             <option value='password'>Password</option>
-                            <option value='email'>Email</option>
+                            <option value='email'>Contact Email</option>
+                            <option value='acedemicdepartment'>Acedemic Department</option>
+                            <option value='researchinterests'>Research Interests</option>
+                            <option value='professionalexperience'>Professional Experience</option>
+                            <option value='researchprojects'>Research Projects</option>
                         </select>
                         <input type='text' name='new_data'>
                         <button type='submit' name='update_data'>Update</button>

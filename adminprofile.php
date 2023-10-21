@@ -26,27 +26,29 @@ if (!isset($_SESSION['id'])) {
 
     <style>
         .outtitle {
-            font-size: 25px;
-            /* Adjust the font size as needed */
+            font-size: 18px;
+
             color: #181d38;
-            /* Change the text color to your preference */
+
             font-weight: bold;
-            /* Add bold font-weight */
+
             margin: 20px 0;
-            /* Add margin to create space around the element */
+
             font-family: 'Arial Black', sans-serif;
+            word-wrap: break-word;
         }
 
         .showtitle {
-            font-size: 23px;
-            /* Adjust the font size as needed */
+            font-size: 18px;
+
             color: #124c64;
-            /* Change the text color to your preference */
+
             font-weight: bold;
-            /* Add bold font-weight */
+
             margin: 20px 0;
-            /* Add margin to create space around the element */
+
             font-family: 'Arial Black', sans-serif;
+            word-wrap: break-word;
         }
     </style>
 
@@ -141,40 +143,128 @@ if (!isset($_SESSION['id'])) {
 
 
     <!-- Testimonial Start -->
-    <section class="section">
-        <div class="container">
-            <div class="row">
-                <?php
 
-                $id = $_SESSION['id'];
+    <?php
+    $id = $_SESSION['id'];
 
-                include 'db.php';
-                $sql = "SELECT * FROM lecdetails WHERE id ='$id' ";
-                $result = mysqli_query($conn, $sql);
+    include 'db.php';
+    $sql = "SELECT profile_photo FROM lecdetails WHERE id ='$id' ";
+    $result = mysqli_query($conn, $sql);
 
-                if (mysqli_num_rows($result) > 0) {
-                    $row = mysqli_fetch_assoc($result);
-                    // echo '<div class="col-lg-4 col-md-6">';
-                    // echo '<div class="testimonial-box">';
-                    echo '<p><strong class="outtitle"> Full Name: </strong><strong class="showtitle">' . $row["fullname"] . '</strong></p>'; // Replace with your column names
-                    //echo '<p class="testimonial-text"><strong class="outtitle"> Index Number: </strong><strong class="showtitle">' . $row["indexnumber"] . '</strong></p>';
-                    // echo '<p class="testimonial-text"><strong class="outtitle"> Contact Number: </strong><strong class="showtitle">' . $row["contactnumber"] . '</strong></p>';
-                    // echo '<p class="testimonial-text"><strong class="outtitle"> Date Of Birth: </strong><strong class="showtitle">' . $row["dob"] . '</p>';
-                    //echo '<p class="testimonial-text"><strong class="outtitle"> University Email: </strong><strong class="showtitle">' . $row["uniemail"] . '</strong></p>';
-                    // echo '<p class="testimonial-text"><strong class="outtitle"> Department: </strong><strong class="showtitle">' . $row["department"] . '</strong></p>';
-                    //echo '<p class="testimonial-text"><strong class="outtitle"> Batch Year: </strong><strong class="showtitle">' . $row["batchyear"] . '</strong></p>';
-                    // echo '<p class="testimonial-text">' . $row[""] . '</p>';
-                    // echo '</div>';
-                    // echo '</div>';
-                } else {
-                    echo "No records found.";
-                }
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $profilePhotoPath = $row["profile_photo"];
+        if (!empty($profilePhotoPath)) {
+            echo '<div class="container-xxl py-5">';
+            echo '<div class="container">';
+            echo '<div class="row justify-content-center align-items-center">';
+            echo '<div class="col-lg-6 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+            echo '<div class="service-item text-center pt-3">';
+            echo '<div class="p-4">';
+            echo '<h5 class="mb-3">Profile Image</h5>';
+            echo '<img src="' . $profilePhotoPath . '" alt="Profile Photo" class="img-fluid" />';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        } else {
+            echo '<p>No profile photo available</p>';
+        }
+    } else {
+        echo '<p>No profile photo available</p>';
+    }
+    mysqli_close($conn);
+    ?>
 
-                mysqli_close($conn);
-                ?>
-            </div>
-        </div>
-    </section>
+
+    <?php
+
+    $id = $_SESSION['id'];
+
+    include 'db.php';
+    $sql = "SELECT * FROM lecdetails WHERE id ='$id' ";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        echo '<div class="container-xxl py-5">';
+        echo '<div class="container">';
+        echo '<div class="row g-6">';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Full Name</h5>';
+        echo '<p><strong class="showtitle">' . $row["fullname"] . '</strong></p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Contact Email</h5>';
+        echo '<p><strong class="showtitle">' . $row["email"] . '</strong></p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Academic Department</h5>';
+        echo '<p class="testimonial-text"><strong class="showtitle">' . $row["acedemicdepartment"] . '</p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '<br/>';
+        echo '<div class="container-xxl py-5">';
+        echo '<div class="container">';
+        echo '<div class="row g-6">';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Research Interests</h5>';
+        echo '<p class="testimonial-text"><strong class="showtitle">' . $row["researchinterests"] . '</strong></p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Professional Experience</h5>';
+        echo '<p class="testimonial-text"><strong class="showtitle">' . $row["professionalexperience"] . '</strong></p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">';
+        echo '<div class="service-item text-center pt-3">';
+        echo '<div class="p-4">';
+        echo '<i class="fa fa-3x fa-chalkboard-teacher text-primary mb-4"></i>';
+        echo '<h5 class="mb-3">Research Projects</h5>';
+        echo '<p class="testimonial-text"><strong class="showtitle">' . $row["researchprojects"] . '</strong></p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+    } else {
+        echo "No records found.";
+    }
+
+    mysqli_close($conn);
+    ?>
+
     <!-- Testimonial End -->
 
 
