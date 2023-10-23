@@ -132,6 +132,76 @@ if (!isset($_SESSION['id'])) {
             border: 1px solid grey;
             padding: 8px;
         }
+
+        .glow-on-hover {
+            width: 220px;
+            height: 50px;
+            border: none;
+            outline: none;
+            color: #fff;
+            background: #111;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+            justify-content: center;
+        }
+
+        .glow-on-hover:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+            justify-content: center;
+        }
+
+        .glow-on-hover:active {
+            color: #000
+        }
+
+        .glow-on-hover:active:after {
+            background: transparent;
+        }
+
+        .glow-on-hover:hover:before {
+            opacity: 1;
+        }
+
+        .glow-on-hover:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+
+        @keyframes glowing {
+            0% {
+                background-position: 0 0;
+            }
+
+            50% {
+                background-position: 400% 0;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -236,6 +306,16 @@ if (!isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div>
+                <a href="https://convertio.co/xlsx-csv/" target="_blank">
+                    <button type="button" class="glow-on-hover">Click to Online Converter</button>
+                </a>
+            </div>
+        </center>
+    </div>
+
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div class="upload">
@@ -454,9 +534,6 @@ if (!isset($_SESSION['id'])) {
     }
 
     ?>
-
-
-
     <!-- End Profile Image -->
 
     <!-- Start Results CSV -->
@@ -501,6 +578,16 @@ if (!isset($_SESSION['id'])) {
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div>
+                <a href="https://convertio.co/xlsx-csv/" target="_blank">
+                    <button type="button" class="glow-on-hover">Click to Online Converter</button>
+                </a>
+            </div>
+        </center>
     </div>
 
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
