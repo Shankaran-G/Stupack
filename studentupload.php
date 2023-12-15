@@ -387,7 +387,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         <input type="file" name="csv_file" id="csv_file">
                     </div>
 
-
+                    <label for="selected_table">Select Table:</label>
+                    <select name="selected_table" required>
+                        <?php
+                        $db = new mysqli('localhost', 'root', '', 'stupack');
+                        $result = $db->query("SHOW TABLES");
+                        while ($row = $result->fetch_row()) {
+                            echo "<option value='{$row[0]}'>{$row[0]}</option>";
+                        }
+                        $db->close();
+                        ?>
+                    </select>
                     <div class="form-field">
                         <input type="submit" name="submit_csv_file" value="Upload CSV File">
                     </div>
@@ -397,7 +407,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
     </div>
     <?php
     if (isset($_POST['submit_csv_file'])) {
-        if (isset($_FILES['csv_file'])) {
+        if (isset($_FILES['csv_file']) && isset($_POST['selected_table'])) {
+            $table_name = $_POST['selected_table'];
             $file = $_FILES['csv_file'];
             $file_name = $file['name'];
             $file_tmp = $file['tmp_name'];
@@ -412,12 +423,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                     die("Connection failed: " . $db->connect_error);
                 }
 
-                $queryInsert = "INSERT INTO stupackdetails (indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $queryInsert = "INSERT INTO $table_name (indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmtInsert = $db->prepare($queryInsert);
 
                 if ($stmtInsert) {
                     $handle = fopen($file_path, "r");
                     $firstRow = true;
+                    $dataInserted = false;
 
                     if ($handle !== FALSE) {
                         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
@@ -429,7 +441,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                             $indexnumber = $data[0];
 
 
-                            $checkQuery = "SELECT COUNT(*) as count FROM stupackdetails WHERE indexnumber = ?";
+                            $checkQuery = "SELECT COUNT(*) as count FROM $table_name WHERE indexnumber = ?";
                             $stmtCheck = $db->prepare($checkQuery);
                             $stmtCheck->bind_param('s', $indexnumber);
                             $stmtCheck->execute();

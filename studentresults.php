@@ -77,35 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
 
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <script>
-        // JavaScript function to handle form submission with AJAX
-        function getDetails() {
-            var selectedTable = document.getElementById('selected_table').value;
-
-            // Create a new XMLHttpRequest object
-            var xhr = new XMLHttpRequest();
-
-            // Configure it: POST-type request, URL, true - asynchronous
-            xhr.open('POST', './studentresults.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            // Set up a function that will be called when the request is successfully completed
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // The response from the server
-                    document.getElementById('resultContainer').innerHTML = xhr.responseText;
-                } else {
-                    console.error('Error:', xhr.statusText);
-                }
-            };
-
-            // Send the request to the server
-            xhr.send('selected_table=' + selectedTable);
-
-            return false; // Prevent the default form submission
-        }
-
-    </script>
-    <script>
         function closeResults() {
             document.querySelector('table').style.display = 'none';
             document.getElementById('closeResultsBtn').style.display = 'none';
@@ -413,7 +384,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div class="upload">
-                <form action="studentupload.php" method="post" enctype="multipart/form-data">
+                <form action="studentresults.php" method="post" enctype="multipart/form-data">
 
                     <div class="form-field">
                         <label for="result_file">Upload Results CSV File: </label>
