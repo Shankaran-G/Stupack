@@ -14,7 +14,8 @@ if (!isset($_SESSION['id'])) {
     header('Location: adminlogin.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'])) {
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
     $table_name = $_POST['table_name'];
 
     $db = new mysqli('localhost', 'root', '', 'stupack');
@@ -24,20 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
 
 
     $queryCreateTable = "CREATE TABLE IF NOT EXISTS $table_name (
-        indexnumber VARCHAR(20) PRIMARY KEY,
-        registration VARCHAR(15) NOT NULL,
-        name VARCHAR(50) NOT NULL,
-        fullname VARCHAR(100) NOT NULL,
-        password VARCHAR(25) NOT NULL,
-        contactnumber INT(11) NOT NULL,
-        uniemail VARCHAR(50) NOT NULL,
-        address VARCHAR(100) NOT NULL,
-        dob VARCHAR(50) NOT NULL,
-        department VARCHAR(50) NOT NULL,
-        batchyear VARCHAR(10) NOT NULL,
-        scholarship VARCHAR(50) NOT NULL,
-        profile_photo VARCHAR(100) NOT NULL
+        indexnumber VARCHAR(255) NOT NULL,
+        modulecode VARCHAR(255) NOT NULL,
+        modulename VARCHAR(255) NOT NULL,
+        results VARCHAR(255) NOT NULL,
+        semester VARCHAR(255) NOT NULL
     )";
+
 
     if ($db->query($queryCreateTable) === TRUE) {
         $dialogMessage = 'Table "' . $table_name . '" created successfully!';
@@ -48,11 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
     }
     $db->close();
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8" />
     <title>Student Details USJ_FOT</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -79,8 +76,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
 
 
     <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script>
+        // JavaScript function to handle form submission with AJAX
+        function getDetails() {
+            var selectedTable = document.getElementById('selected_table').value;
 
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
 
+            // Configure it: POST-type request, URL, true - asynchronous
+            xhr.open('POST', './studentresults.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            // Set up a function that will be called when the request is successfully completed
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // The response from the server
+                    document.getElementById('resultContainer').innerHTML = xhr.responseText;
+                } else {
+                    console.error('Error:', xhr.statusText);
+                }
+            };
+
+            // Send the request to the server
+            xhr.send('selected_table=' + selectedTable);
+
+            return false; // Prevent the default form submission
+        }
+
+    </script>
+    <script>
+        function closeResults() {
+            document.querySelector('table').style.display = 'none';
+            document.getElementById('closeResultsBtn').style.display = 'none';
+        }
+    </script>
     <link href="css/style.css" rel="stylesheet" />
     <style>
         .dialog {
@@ -253,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
 </head>
 
 <body>
+
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
@@ -275,8 +306,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                     <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Uploads</a>
                     <div class="dropdown-menu fade-down m-0">
                         <a href="upload.php" class="dropdown-item">Staff Upload</a>
-                        <a href="studentupload.php" class="dropdown-item active">Students Upload</a>
-                        <a href="studentresults.php" class="dropdown-item ">Results Upload</a>
+                        <a href="studentupload.php" class="dropdown-item">Students Upload</a>
+                        <a href="studentresults.php" class="dropdown-item active">Results Upload</a>
                     </div>
                 </div>
                 <a href="mail.html" class="nav-item nav-link">Modules</a>
@@ -294,12 +325,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
                     <h1 class="display-3 text-white animated slideInDown">
-                        Student Details Upload
+                        Student Results Upload
                     </h1>
                 </div>
             </div>
         </div>
     </div>
+
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div class="upload">
@@ -307,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                     <label for="table_name">Enter Table Name:</label>
                     <input type="text" name="table_name" required>
                     <div class="form-field">
-                        <button type="submit" name="create_student_table">Create Table</button>
+                        <button type="submit" name="create_table">Create Table</button>
                     </div>
                 </form>
             </div>
@@ -333,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 1</h5>
-                            <p>Upload your Student Details.</p>
+                            <p>Upload Student Results From Device .</p>
                         </div>
                     </div>
                 </div>
@@ -342,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 2</h5>
-                            <p>Select CSV File From Your Device.</p>
+                            <p>The Upload Time Its Load The Page Just Refresh It.</p>
                         </div>
                     </div>
                 </div>
@@ -351,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 3</h5>
-                            <p>The File Must be .CSV File Format</p>
+                            <p>After Refresh You Get The Insertation Reply</p>
                         </div>
                     </div>
                 </div>
@@ -360,13 +392,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         <div class="p-4">
                             <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
                             <h5 class="mb-3">Instruction 4</h5>
-                            <p>Avoid Repeat Records In The File.</p>
+                            <p>Recheck The Inseration By Click The Get Results.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div>
@@ -383,26 +416,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                 <form action="studentupload.php" method="post" enctype="multipart/form-data">
 
                     <div class="form-field">
-                        <label for="csv_file">Upload CSV File: </label>
-                        <input type="file" name="csv_file" id="csv_file">
+                        <label for="result_file">Upload Results CSV File: </label>
+                        <input type="file" name="result_file" id="result_file">
                     </div>
-
+                    <label for="selected_table">Select Table:</label>
+                    <select name="selected_table" required>
+                        <?php
+                        $db = new mysqli('localhost', 'root', '', 'stupack');
+                        $result = $db->query("SHOW TABLES");
+                        while ($row = $result->fetch_row()) {
+                            echo "<option value='{$row[0]}'>{$row[0]}</option>";
+                        }
+                        $db->close();
+                        ?>
+                    </select>
 
                     <div class="form-field">
-                        <input type="submit" name="submit_csv_file" value="Upload CSV File">
+                        <input type="submit" name="submit_results_file" value="Upload Results CSV File">
                     </div>
                 </form>
             </div>
         </center>
     </div>
     <?php
-    if (isset($_POST['submit_csv_file'])) {
-        if (isset($_FILES['csv_file'])) {
-            $file = $_FILES['csv_file'];
+    if (isset($_POST['submit_results_file'])) {
+        if (isset($_FILES['result_file']) && isset($_POST['selected_table'])) {
+            $table_name = $_POST['selected_table'];
+            $file = $_FILES['result_file'];
             $file_name = $file['name'];
             $file_tmp = $file['tmp_name'];
 
-            $upload_directory = 'stuCsvfiles/';
+            $upload_directory = 'stuResults/';
             $file_path = $upload_directory . $file_name;
 
             if (move_uploaded_file($file_tmp, $file_path)) {
@@ -412,12 +456,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                     die("Connection failed: " . $db->connect_error);
                 }
 
-                $queryInsert = "INSERT INTO stupackdetails (indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $queryInsert = "INSERT INTO $table_name (indexnumber, semester, modulecode, modulename, results) VALUES (?, ?, ?, ?, ?)";
                 $stmtInsert = $db->prepare($queryInsert);
 
                 if ($stmtInsert) {
                     $handle = fopen($file_path, "r");
                     $firstRow = true;
+                    $dataInserted = false;
 
                     if ($handle !== FALSE) {
                         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
@@ -427,220 +472,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                             }
 
                             $indexnumber = $data[0];
+                            $semester = $data[1];
+                            $modulecode = $data[2];
+                            $modulename = $data[3];
+                            $results = $data[4];
 
+                            $stmtInsert->bind_param('sssss', $indexnumber, $semester, $modulecode, $modulename, $results);
 
-                            $checkQuery = "SELECT COUNT(*) as count FROM stupackdetails WHERE indexnumber = ?";
-                            $stmtCheck = $db->prepare($checkQuery);
-                            $stmtCheck->bind_param('s', $indexnumber);
-                            $stmtCheck->execute();
-                            $resultCheck = $stmtCheck->get_result();
-                            $stmtCheck->close();
-                            $rowCheck = $resultCheck->fetch_assoc();
-
-
-                            if ($rowCheck['count'] == 0) {
-                                $registration = $data[1];
-                                $name = $data[2];
-                                $fullname = $data[3];
-                                $password = $data[4];
-                                $contactnumber = $data[5];
-                                $uniemail = $data[6];
-                                $address = $data[7];
-                                $dob = $data[8];
-                                $department = $data[9];
-                                $batchyear = $data[10];
-                                $scholarship = $data[11];
-
-                                $stmtInsert->bind_param('ssssssssssss', $indexnumber, $registration, $name, $fullname, $password, $contactnumber, $uniemail, $address, $dob, $department, $batchyear, $scholarship);
-                                $stmtInsert->execute();
+                            if ($stmtInsert->execute()) {
+                                $dataInserted = true;
                             }
                         }
                         fclose($handle);
                     }
 
+                    if ($dataInserted) {
+                        echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
+                    } else {
+                        echo '<div style="text-align: center; margin-top: 20px;">No new data was inserted.</div>';
+                    }
+
                     $stmtInsert->close();
-                    echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
-                } else {
-                    echo "Prepare statement error: " . $db->error;
                 }
 
                 $db->close();
-            }
-        }
-    }
-    ?>
-
-
-    <br />
-
-
-    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 5</h5>
-                            <p>Upload Student Profile Image.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 6</h5>
-                            <p>Select Profile Picture From Device.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 7</h5>
-                            <p>The Formats Are .jpg, .jpeg, .png</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 8</h5>
-                            <p>Avoid Not Clear Image.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <center>
-            <div class="upload">
-                <form action="studentupload.php" method="post" enctype="multipart/form-data">
-                    <div class="form-field">
-                        <label for="indexnumber">Index Number:</label>
-                        <input type="text" name="indexnumber" id="indexnumber" required>
-                    </div>
-
-
-                    <div class="form-field">
-                        <label for="profile_photo">Profile Photo:</label>
-                        <input type="file" name="submit_profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png"
-                            required>
-                    </div>
-
-
-                    <div class="form-field">
-                        <input type="submit" name="submit_profile_photo" value="Upload Profile Photo">
-                    </div>
-                </form>
-            </div>
-        </center>
-    </div>
-    <?php
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_profile_photo'])) {
-        if (isset($_POST['indexnumber']) && isset($_FILES['submit_profile_photo'])) {
-            $indexnumber = $_POST['indexnumber'];
-            $file = $_FILES['submit_profile_photo'];
-            $file_name = $file['name'];
-            $file_tmp = $file['tmp_name'];
-
-            $upload_directory = 'uploads/';
-            $file_path = $upload_directory . $file_name;
-
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $db = new mysqli('localhost', 'root', '', 'stupack');
-                $query = "SELECT indexnumber FROM stupackdetails WHERE indexnumber = ?";
-                $stmt = $db->prepare($query);
-                $stmt->bind_param('s', $indexnumber);
-                $stmt->execute();
-                $stmt->store_result();
-
-                if ($stmt->num_rows > 0) {
-                    $stmt->close();
-                    $update_query = "UPDATE stupackdetails SET profile_photo = ? WHERE indexnumber = ?";
-                    $update_stmt = $db->prepare($update_query);
-                    $update_stmt->bind_param('ss', $file_path, $indexnumber);
-                    if ($update_stmt->execute()) {
-                        $message = "Profile photo updated successfully.";
-                    }
-                } else {
-                    $insert_query = "INSERT INTO stupackdetails (indexnumber, profile_photo) VALUES (?, ?)";
-                    $insert_stmt = $db->prepare($insert_query);
-                    $insert_stmt->bind_param('ss', $indexnumber, $file_path);
-                    if ($insert_stmt->execute()) {
-                        $message = "New record created with the profile photo.";
-                    }
-                }
-
-                $db->close();
-
-                echo '<script type="text/javascript">';
-                echo 'alert("' . $message . '");';
-                echo 'window.location.href = "studentupload.php";';
-                echo '</script>';
-
             } else {
-                echo '<script type="text/javascript">';
-                echo 'alert("' . $message . '");';
-                echo 'window.location.href = "studentupload.php";';
-                echo '</script>';
-
+                echo '<div style="text-align: center; margin-top: 20px;">Error moving the uploaded file.</div>';
             }
+        } else {
+            echo '<div style="text-align: center; margin-top: 20px;">No file was uploaded or table not selected.</div>';
         }
     }
-
     ?>
 
-    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 9</h5>
-                            <p>Click Get Details To Get Student Records.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 10</h5>
-                            <p>Check The Records And Find Any Mistake Update Them.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 11</h5>
-                            <p>Select The Field then Fill The Update Value Then Submit.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 12</h5>
-                            <p>Change The Profile Picture By Reupload.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container my-3">
+    <div class="wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container my-5">
             <?php
             include 'db.php';
             echo "<div class='container my-5'>";
@@ -648,7 +514,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
             echo "<div class='row justify-content-center'>";
             echo "<div class='col-lg-6'>";
             echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
-            echo '<form method="post">';
+            echo '<form method="post" onsubmit="return getDetails()">';
             echo '<label for="selected_table">Select Table : </label>';
             echo '<select name="selected_table" required>';
             $tables = $conn->query("SHOW TABLES");
@@ -657,16 +523,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
             }
             echo '</select>';
             echo '<div class="form-field">';
-            echo '<button type="submit" name="getdetails" class="btn btn-primary">Get Details</button>';
+            echo '<button type="submit" name="getresults" class="btn btn-primary">Get Results</button>';
+            echo '</div>';
             echo '</form>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
 
-            if (isset($_POST['getdetails'])) {
+            if (isset($_POST['getresults'])) {
                 $selected_table = $_POST['selected_table'];
-                $expected_columns = array('indexnumber', 'fullname', 'registration', 'name', 'password', 'contactnumber', 'uniemail', 'address', 'dob', 'department', 'batchyear', 'scholarship');
+                $expected_columns = array('indexnumber', 'semester', 'modulecode', 'modulename', 'results');
 
                 $column_check_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?";
                 $stmt_columns = $conn->prepare($column_check_query);
@@ -689,87 +556,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                         }, 7000); 
                       </script>";
                     } else {
-                        echo "<button onclick='closeDetails()' id='closeDetailsBtn' class='btn btn-danger'>Close Details</button>";
-                        echo "<h4 class='my-4'>Student Details</h4>";
+                        echo "<button onclick='closeResults()' id='closeResultsBtn' class='btn btn-danger'>Close Details</button>";
+                        echo "<h4 class='my-4'>Student Results</h4>";
                         echo "<table>";
                         echo "<tr class='text-primary'>
-                        <th class='outtitle'>ID</th>
-                        <th class='outtitle'>Full Name</th>
-                        <th class='outtitle'>Registration No</th>
-                        <th class='outtitle'>Name</th>
-                        <th class='outtitle'>Password</th>
-                        <th class='outtitle'>Contact Number</th>
-                        <th class='outtitle'>University Email</th>
-                        <th class='outtitle'>Address</th>
-                        <th class='outtitle'>Date of Birth</th>
-                        <th class='outtitle'>Department</th>
-                        <th class='outtitle'>Batch Year</th>
-                        <th class='outtitle'>Scholarship</th>
-                        <th class='outtitle'>Update Data</th>
-                    </tr>";
+                <th class='outresult'>Indexnumber</th>
+                <th class='outresult'>Semester</th>
+                <th class='outresult'>Modulecode</th>
+                <th class='outresult'>Modulename</th>
+                <th class='outresult'>Results</th>
+                <th class='outresult'>Update</th>
+            </tr>";
 
-
-                        $query = "SELECT indexnumber, registration, name, fullname, password, contactnumber, uniemail, address, dob, department, batchyear, scholarship FROM $selected_table";
+                        $query = "SELECT indexnumber, semester, modulecode, modulename, results FROM $selected_table";
                         $result = $conn->query($query);
 
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
-                                echo "<td class='showtitle'>" . $row['indexnumber'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['fullname'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['registration'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['name'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['password'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['contactnumber'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['uniemail'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['address'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['dob'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['department'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['batchyear'] . "</td>";
-                                echo "<td class='showtitle'>" . $row['scholarship'] . "</td>";
-                                echo "<td class='showtitle'>
-                                <form method='post'>
-                                    <input type='hidden' name='change_indexnumber' value='" . $row['indexnumber'] . "'>
-                                    <select name='change_column'>
-                                        <option value='name'>Name</option>
-                                        <option value='fullname'>Full Name</option>
-                                        <option value='registration'>Registration No</option>
-                                        <option value='password'>Password</option>
-                                        <option value='contactnumber'>Contact Number</option>
-                                        <option value='uniemail'>University Email</option>
-                                        <option value='address'>Address</option>
-                                        <option value='dob'>Date of Birth</option>
-                                        <option value='department'>Department</option>
-                                        <option value='batchyear'>Batch Year</option>
-                                        <option value='scholarship'>Scholarship</option>
-                                    </select>
-                                    <input type='text' name='new_data'>
-                                    <button type='submit' name='update_data'>Update</button>
-                                </form>
-                            </td>";
+                                echo "<td class='showresult'>" . $row['indexnumber'] . "</td>";
+                                echo "<td class='showresult'>" . $row['semester'] . "</td>";
+                                echo "<td class='showresult'>" . $row['modulecode'] . "</td>";
+                                echo "<td class='showresult'>" . $row['modulename'] . "</td>";
+                                echo "<td class='showresult'>" . $row['results'] . "</td>";
+                                echo "<td class='showresult'>
+                        <form method='post'>
+                            <input type='hidden' name='change_result_indexnumber' value='" . $row['indexnumber'] . "'>
+                            <select name='change_result_column'>
+                                <option value='indexnumber'>Indexnumber</option>
+                                <option value='semester'>Semester</option>
+                                <option value='modulecode'>Modulecode</option>
+                                <option value='modulename'>Modulename </option>
+                                <option value='results'>Results</option>
+                            </select>
+                            <input type='text' name='new_result'>
+                            <button type='submit' name='update_result'>Update</button>
+                        </form>
+                    </td>";
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='12'>No data found in the stupackdetails table.</td></tr>";
+                            echo "<tr><td colspan='6'>No data found in the selected table.</td></tr>";
                         }
 
                         echo "</table>";
                     }
                 }
             }
+            if (isset($_POST['update_result'])) {
+                $change_result_indexnumber = $_POST['change_result_indexnumber'];
+                $change_result_column = $_POST['change_result_column'];
+                $new_result = $_POST['new_result'];
 
-            if (isset($_POST['update_data'])) {
-
-                $change_indexnumber = $_POST['change_indexnumber'];
-                $change_column = $_POST['change_column'];
-                $new_data = $_POST['new_data'];
-
-
-                $update_query = "UPDATE stupackdetails SET $change_column = ? WHERE indexnumber = ?";
+                $update_query = "UPDATE $selected_table SET $change_result_column = ? WHERE indexnumber = ?";
                 $stmtUpdate = $conn->prepare($update_query);
 
                 if ($stmtUpdate) {
-                    $stmtUpdate->bind_param('ss', $new_data, $change_indexnumber);
+                    $stmtUpdate->bind_param('ss', $new_result, $change_result_indexnumber);
                     if ($stmtUpdate->execute()) {
                         echo "Data updated successfully!";
                     } else {
@@ -777,18 +620,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_student_table'
                     }
                     $stmtUpdate->close();
                 }
-                echo "<script>document.getElementById('closeDetailsBtn').style.display = 'none';</script>";
+                echo "<script>document.getElementById('closeResultsBtn').style.display = 'none';</script>";
             }
             ?>
+            <div id="resultContainer"></div>
         </div>
     </div>
 
-    <script>
-        function closeDetails() {
-            document.querySelector('table').style.display = 'none';
-            document.getElementById('closeDetailsBtn').style.display = 'none';
-        }
-    </script>
 
 
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">

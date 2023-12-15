@@ -123,6 +123,7 @@ if (isset($_POST['semester'])) {
                     <div class="dropdown-menu fade-down m-0">
                         <a href="upload.php" class="dropdown-item">Staff Upload</a>
                         <a href="studentupload.php" class="dropdown-item">Students Upload</a>
+                        <a href="studentresults.php" class="dropdown-item ">Results Upload</a>
                     </div>
                 </div>
                 <a href="mail.html" class="nav-item nav-link">Modules</a>

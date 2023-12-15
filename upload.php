@@ -3,9 +3,9 @@ session_start();
 include 'db.php';
 
 if (isset($_POST['logout'])) {
-    // Destroy the session data
+
     session_destroy();
-    // Redirect to the login page after logout
+
     header('Location: adminlogin.php');
     exit();
 }
@@ -39,22 +39,22 @@ if (isset($_FILES['csv_file'])) {
         if ($stmtCheckID && $stmtInsert) {
             $handle = fopen($file_path, "r");
             if ($handle !== FALSE) {
-                $firstRow = true; // Flag to identify the first row
+                $firstRow = true;
                 while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
                     if ($firstRow) {
-                        // Skip the first row
+
                         $firstRow = false;
                         continue;
                     }
                     $id = $data[0];
 
-                    // Check if ID already exists
+
                     $stmtCheckID->bind_param('s', $id);
                     $stmtCheckID->execute();
                     $stmtCheckID->store_result();
 
                     if ($stmtCheckID->num_rows == 0) {
-                        // ID is not in the database, insert the row
+
                         $id = $data[0];
                         $fullname = $data[1];
                         $name = $data[2];
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['id'])) {
         $id = $_POST['id'];
 
-        // Handle file upload
+
         if (isset($_FILES['profile_photo'])) {
             $file = $_FILES['profile_photo'];
             $file_name = $file['name'];
@@ -101,10 +101,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->store_result();
 
                 if (!empty($existingPhotoPath)) {
-                    // Display the existing profile photo
+
                     echo '<img src="' . $existingPhotoPath . '" alt="Profile Photo" style="max-width: 200px;" /><br>';
 
-                    // Provide a delete button
+
                     echo '<form method="post" action="upload.php">';
                     echo '<input type="hidden" name="id" value="' . $id . '">';
                     echo '<input type="hidden" name="delete_existing" value="true">';
@@ -113,12 +113,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 if (isset($_POST['delete_existing'])) {
-                    // User wants to delete the existing photo
-                    unlink($existingPhotoPath); // Delete the file from the server
+
+                    unlink($existingPhotoPath);
                     $stmt->close();
-                    // Continue with the rest of the code to handle the file upload
+
                 } else {
-                    // Continue with the rest of the code to handle the file upload
+
                 }
 
                 if ($stmt->num_rows > 0) {
@@ -150,7 +150,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-
 ?>
 
 
@@ -166,31 +165,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta content="" name="description" />
 
 
-    <!-- Favicon -->
+
     <link href="img/favicon.ico" rel="icon" />
 
-    <!-- Google Web Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
         rel="stylesheet" />
 
-    <!-- Icon Font Stylesheet -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Libraries Stylesheet -->
+
     <link href="lib/animate/animate.min.css" rel="stylesheet" />
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
+
     <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Template Stylesheet -->
+
     <link href="css/style.css" rel="stylesheet" />
     <style>
-        /* Center the form horizontally */
         .centered-form {
             display: flex;
             justify-content: center;
@@ -198,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             height: 20vh;
         }
 
-        /* Style for each form field */
+
         .form-field {
             margin: 20px 20px;
             text-align: center;
@@ -260,16 +258,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <!-- Spinner Start -->
+
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <!-- Spinner End -->
 
-    <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>STUpack</h2>
@@ -286,6 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="dropdown-menu fade-down m-0">
                         <a href="upload.php" class="dropdown-item active">Staff Upload</a>
                         <a href="studentupload.php" class="dropdown-item">Students Upload</a>
+                        <a href="studentresults.php" class="dropdown-item ">Results Upload</a>
                     </div>
                 </div>
                 <a href="mail.html" class="nav-item nav-link">Modules</a>
@@ -297,10 +294,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </nav>
-    <!-- Navbar End -->
 
-
-    <!-- Header Start -->
     <div class="container-fluid bg-primary py-5 mb-5 page-header">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -312,11 +306,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-    <!-- Header End -->
 
-    <!-- Testimonial Start -->
-
-    <!-- Service Start -->
     <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
         <div class="container">
             <div class="row g-4">
@@ -360,18 +350,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Service Start -->
+
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <center>
             <div class="upload">
                 <form action="upload.php" method="post" enctype="multipart/form-data">
-                    <!-- Upload CSV File -->
+
                     <div class="form-field">
                         <label for="csv_file">Upload CSV File: </label>
                         <input type="file" name="csv_file" id="csv_file">
                     </div>
 
-                    <!-- Submit CSV File Button -->
+
                     <div class="form-field">
                         <input type="submit" name="submit_csv_file" value="Upload CSV File">
                     </div>
@@ -433,13 +423,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="id" id="id" required>
                     </div>
 
-                    <!-- Upload Profile Photo -->
+
                     <div class="form-field">
                         <label for="profile_photo">Profile Photo:</label>
                         <input type="file" name="profile_photo" id="profile_photo" accept=".jpg, .jpeg, .png" required>
                     </div>
 
-                    <!-- Submit Profile Photo Button -->
+
                     <div class="form-field">
                         <input type="submit" name="submit_profile_photo" value="Upload Profile Photo">
                     </div>
@@ -524,7 +514,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th class='outtitle'>Change Data</th>
         </tr>";
 
-                // SQL query to fetch data from lecdetails table
+
                 $query = "SELECT id, fullname, name, password, email, acedemicdepartment, researchinterests, professionalexperience, researchprojects FROM lecdetails";
                 $result = $conn->query($query);
 
@@ -567,12 +557,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             if (isset($_POST['update_data'])) {
-                // Get the values from the form
+
                 $change_id = $_POST['change_id'];
                 $change_column = $_POST['change_column'];
                 $new_data = $_POST['new_data'];
 
-                // SQL query to update data in lecdetails table
+
                 $update_query = "UPDATE lecdetails SET $change_column = '$new_data' WHERE id = '$change_id'";
                 if ($conn->query($update_query) === TRUE) {
                     echo "Data updated successfully!";
@@ -584,9 +574,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Testimonial End -->
-
-    <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
@@ -658,12 +645,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-    <!-- Footer End -->
 
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-    <!-- JavaScript Libraries -->
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
@@ -673,7 +658,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    <!-- Template Javascript -->
+
     <script src="js/main.js"></script>
 </body>
 
