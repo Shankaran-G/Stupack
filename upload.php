@@ -288,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <a href="studentupload.php" class="dropdown-item">Students Upload</a>
                     </div>
                 </div>
-                <a href="mail.html" class="nav-item nav-link">Notification</a>
+                <a href="mail.html" class="nav-item nav-link">Modules</a>
 
                 <form method="post" action="">
                     <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out
@@ -634,13 +634,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c2.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c4.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c5.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c1.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c6.jpg" alt="" />
                         </div>
                     </div>
                 </div>

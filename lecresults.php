@@ -2,18 +2,31 @@
 session_start();
 
 if (isset($_POST['logout'])) {
-    // Destroy the session data
+
     session_destroy();
-    // Redirect to the login page after logout
+
     header('Location: leclogin.php');
     exit();
 }
 
 if (!isset($_SESSION['id'])) {
-    // Redirect to the login page if the user is not logged in
-    header('Location: leclogin.php'); // Replace 'login.php' with your actual login page URL
+
+    header('Location: leclogin.php');
     exit();
 }
+$selectedIndexNumber = isset($_SESSION['selectedIndexNumber']) ? $_SESSION['selectedIndexNumber'] : '';
+$selectedSemester = isset($_SESSION['selectedSemester']) ? $_SESSION['selectedSemester'] : '';
+
+if (isset($_POST['submit'])) {
+    $selectedIndexNumber = $_POST['indexnumber'];
+    $_SESSION['selectedIndexNumber'] = $selectedIndexNumber;
+}
+
+if (isset($_POST['semester'])) {
+    $selectedSemester = $_POST['semester'];
+    $_SESSION['selectedSemester'] = $selectedSemester;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -27,28 +40,28 @@ if (!isset($_SESSION['id'])) {
     <meta content="" name="description" />
 
 
-    <!-- Favicon -->
+
     <link href="img/favicon.ico" rel="icon" />
 
-    <!-- Google Web Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
         rel="stylesheet" />
 
-    <!-- Icon Font Stylesheet -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Libraries Stylesheet -->
+
     <link href="lib/animate/animate.min.css" rel="stylesheet" />
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
+
     <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Template Stylesheet -->
+
     <link href="css/style.css" rel="stylesheet" />
 
     <style>
@@ -86,16 +99,14 @@ if (!isset($_SESSION['id'])) {
 </head>
 
 <body>
-    <!-- Spinner Start -->
+
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <!-- Spinner End -->
 
-    <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>STUpack</h2>
@@ -107,7 +118,7 @@ if (!isset($_SESSION['id'])) {
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="lecprofile.php" class="nav-item nav-link">Profile</a>
                 <a href="#" class="nav-item nav-link active">Results</a>
-                <a href="mail.html" class="nav-item nav-link">Notification</a>
+                <a href="mail.html" class="nav-item nav-link">Modules</a>
             </div>
             <form method="post" action="">
                 <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out <i
@@ -115,10 +126,7 @@ if (!isset($_SESSION['id'])) {
             </form>
         </div>
     </nav>
-    <!-- Navbar End -->
 
-
-    <!-- Header Start -->
     <div class="container-fluid bg-primary py-5 mb-5 page-header">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -130,9 +138,7 @@ if (!isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-    <!-- Header End -->
 
-    <!-- Testimonial Start -->
 
     <div class="container my-5">
         <div class="container text-center">
@@ -160,22 +166,24 @@ if (!isset($_SESSION['id'])) {
     </div>
 
 
-    </div>
+
     <div class="container my-5">
         <?php
         include 'db.php';
+        if ($selectedIndexNumber) {
+            $indexnumber = $selectedIndexNumber;
 
-        if (isset($_POST['submit'])) {
-            $indexnumber = $_POST['indexnumber'];
-
-            // SQL query to fetch student details based on the input index number
             $query = "SELECT * FROM stupackdetails WHERE indexnumber = '$indexnumber'";
-
-            // Execute the query
             $studentDetails = $conn->query($query);
 
             if ($studentDetails->num_rows > 0) {
                 $studentRow = $studentDetails->fetch_assoc();
+                if (isset($studentRow['profile_photo'])) {
+                    $profileImage = $studentRow['profile_photo'];
+                    if (!empty($profileImage)) {
+                        echo '<img src="' . $profileImage . '" alt="Profile Image" class="img-fluid mb-3" style="max-width: 200px; border-radius: 10px;">';
+                    }
+                }
                 echo '<p><strong class="outtitle"> Full Name: </strong><strong class="showtitle">' . $studentRow["fullname"] . '</strong></p>';
                 echo '<p class="testimonial-text"><strong class="outtitle"> Index Number: </strong><strong class="showtitle">' . $studentRow["indexnumber"] . '</strong></p>';
                 echo '<p class="testimonial-text"><strong class="outtitle"> Contact Number: </strong><strong class="showtitle">' . $studentRow["contactnumber"] . '</strong></p>';
@@ -193,10 +201,10 @@ if (!isset($_SESSION['id'])) {
             echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
 
 
-            // SQL query to fetch unique semesters for the student
+
             $queryy = "SELECT DISTINCT semester FROM results WHERE indexnumber = '$indexnumber'";
 
-            // Execute the query
+
             $semesterResults = $conn->query($queryy);
 
             if ($semesterResults->num_rows > 0) {
@@ -218,45 +226,45 @@ if (!isset($_SESSION['id'])) {
             echo '</div>';
             echo '</div>';
         }
+        if ($selectedSemester) {
+            if (isset($_POST['semester'])) {
+                $indexnumber = $_POST['indexnumber'];
+                $selectedSemester = $_POST['semester'];
 
-        if (isset($_POST['semester'])) {
-            $indexnumber = $_POST['indexnumber']; // Get the index number from the form
-            $selectedSemester = $_POST['semester'];
 
-            // SQL query to fetch results for the selected semester
-            $query = "SELECT * FROM results WHERE indexnumber = '$indexnumber' AND semester = '$selectedSemester'";
+                $query = "SELECT * FROM results WHERE indexnumber = '$indexnumber' AND semester = '$selectedSemester'";
 
-            // Execute the query
-            $results = $conn->query($query);
 
-            if ($results->num_rows > 0) {
-                echo "<h4 class='my-4'>Results for Semester: $selectedSemester</h4>";
-                echo "<table>";
-                echo "<tr class='text-primary'>
+                $results = $conn->query($query);
+
+                if ($results->num_rows > 0) {
+                    echo "<h4 class='my-4'>Results for Semester: $selectedSemester</h4>";
+                    echo "<table>";
+                    echo "<tr class='text-primary'>
                     <th class='outtitle'>Module Code</th>
                     <th class='outtitle'>Module Name</th>
                     <th class='outtitle'>Result</th>
                 </tr>";
 
-                while ($row = $results->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td class='showtitle'>" . $row['modulecode'] . "</td>";
-                    echo "<td class='showtitle'>" . $row['modulename'] . "</td>";
-                    echo "<td class='showtitle'>" . $row['results'] . "</td>";
-                    echo "</tr>";
-                }
+                    while ($row = $results->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td class='showtitle'>" . $row['modulecode'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['modulename'] . "</td>";
+                        echo "<td class='showtitle'>" . $row['results'] . "</td>";
+                        echo "</tr>";
+                    }
 
-                echo "</table>";
-            } else {
-                echo "No results found for this semester.";
+                    echo "</table>";
+                } else {
+                    echo "No results found for this semester.";
+                }
             }
         }
+
         ?>
     </div>
 
-    <!-- Testimonial End -->
 
-    <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
@@ -304,13 +312,13 @@ if (!isset($_SESSION['id'])) {
                             <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c2.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c4.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c5.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c1.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c6.jpg" alt="" />
                         </div>
                     </div>
                 </div>
@@ -328,13 +336,10 @@ if (!isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-    <!-- Footer End -->
 
-
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-    <!-- JavaScript Libraries -->
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
@@ -347,9 +352,9 @@ if (!isset($_SESSION['id'])) {
 
     <script>
         window.addEventListener('pageshow', function (event) {
-            // Check if the event's persisted property is set to true
+
             if (event.persisted) {
-                // Redirect to the previous page without resubmitting the form
+
                 window.location.reload();
             }
         });

@@ -3,21 +3,18 @@ session_start();
 include 'db.php';
 
 if (isset($_POST['logout'])) {
-    // Destroy the session data
+
     session_destroy();
-    // Redirect to the login page after logout
+
     header('Location: adminlogin.php');
     exit();
 }
 
 if (!isset($_SESSION['id'])) {
-    header('Location: adminlogin.php'); // Redirect to the login page if not logged in
+    header('Location: adminlogin.php');
     exit();
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,31 +26,29 @@ if (!isset($_SESSION['id'])) {
     <meta content="" name="description" />
 
 
-    <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon" />
 
-    <!-- Google Web Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
         rel="stylesheet" />
 
-    <!-- Icon Font Stylesheet -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Libraries Stylesheet -->
+
     <link href="lib/animate/animate.min.css" rel="stylesheet" />
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
+
     <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Template Stylesheet -->
+
     <link href="css/style.css" rel="stylesheet" />
     <style>
-        /* Center the form horizontally */
         .centered-form {
             display: flex;
             justify-content: center;
@@ -61,7 +56,7 @@ if (!isset($_SESSION['id'])) {
             height: 20vh;
         }
 
-        /* Style for each form field */
+
         .form-field {
             margin: 20px 20px;
             text-align: center;
@@ -235,7 +230,7 @@ if (!isset($_SESSION['id'])) {
                         <a href="studentupload.php" class="dropdown-item active">Students Upload</a>
                     </div>
                 </div>
-                <a href="mail.html" class="nav-item nav-link">Notification</a>
+                <a href="mail.html" class="nav-item nav-link">Modules</a>
 
                 <form method="post" action="">
                     <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out
@@ -376,7 +371,7 @@ if (!isset($_SESSION['id'])) {
                             $stmtCheck->close();
                             $rowCheck = $resultCheck->fetch_assoc();
 
-                            // If the index number doesn't exist, insert the row
+
                             if ($rowCheck['count'] == 0) {
                                 $registration = $data[1];
                                 $name = $data[2];
@@ -520,13 +515,13 @@ if (!isset($_SESSION['id'])) {
 
                 echo '<script type="text/javascript">';
                 echo 'alert("' . $message . '");';
-                echo 'window.location.href = "studentupload.php";'; // Replace "studentlogin.php" with the actual URL of your student login page.
+                echo 'window.location.href = "studentupload.php";';
                 echo '</script>';
 
             } else {
                 echo '<script type="text/javascript">';
                 echo 'alert("' . $message . '");';
-                echo 'window.location.href = "studentupload.php";'; // Replace "studentlogin.php" with the actual URL of your student login page.
+                echo 'window.location.href = "studentupload.php";';
                 echo '</script>';
 
             }
@@ -534,252 +529,7 @@ if (!isset($_SESSION['id'])) {
     }
 
     ?>
-    <!-- End Profile Image -->
 
-    <!-- Start Results CSV -->
-    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 9</h5>
-                            <p>Upload Student Results From Device .</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 10</h5>
-                            <p>The Upload Time Its Load The Page Just Refresh It.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 11</h5>
-                            <p>After Refresh You Get The Insertation Reply</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
-                            <h5 class="mb-3">Instruction 12</h5>
-                            <p>Recheck The Inseration By Click The Get Results.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <center>
-            <div>
-                <a href="https://convertio.co/xlsx-csv/" target="_blank">
-                    <button type="button" class="glow-on-hover">Click to Online Converter</button>
-                </a>
-            </div>
-        </center>
-    </div>
-
-    <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <center>
-            <div class="upload">
-                <form action="studentupload.php" method="post" enctype="multipart/form-data">
-                    <!-- Upload CSV File -->
-                    <div class="form-field">
-                        <label for="result_file">Upload Results CSV File: </label>
-                        <input type="file" name="result_file" id="result_file">
-                    </div>
-
-                    <!-- Submit CSV File Button -->
-                    <div class="form-field">
-                        <input type="submit" name="submit_results_file" value="Upload Results CSV File">
-                    </div>
-                </form>
-            </div>
-        </center>
-    </div>
-    <?php
-    if (isset($_POST['submit_results_file'])) {
-        if (isset($_FILES['result_file'])) {
-            $file = $_FILES['result_file'];
-            $file_name = $file['name'];
-            $file_tmp = $file['tmp_name'];
-
-            $upload_directory = 'stuResults/';
-            $file_path = $upload_directory . $file_name;
-
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $db = new mysqli('localhost', 'root', '', 'stupack'); // Update database credentials as needed
-    
-                if ($db->connect_error) {
-                    die("Connection failed: " . $db->connect_error);
-                }
-
-                $queryInsert = "INSERT INTO results (indexnumber, semester, modulecode, modulename, results) VALUES (?, ?, ?, ?, ?)";
-                $stmtInsert = $db->prepare($queryInsert);
-
-                if ($stmtInsert) {
-                    $handle = fopen($file_path, "r");
-                    $firstRow = true;
-                    $dataInserted = false;
-
-                    if ($handle !== FALSE) {
-                        while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                            if ($firstRow) {
-                                $firstRow = false;
-                                continue;
-                            }
-
-                            $indexnumber = $data[0];
-                            $modulecode = $data[2];
-
-                            // Check if a row with the same indexnumber and modulecode already exists
-                            $checkQuery = "SELECT indexnumber FROM results WHERE indexnumber = ? AND modulecode = ?";
-                            $checkStmt = $db->prepare($checkQuery);
-                            $checkStmt->bind_param('ss', $indexnumber, $modulecode);
-                            $checkStmt->execute();
-                            $checkStmt->store_result();
-
-                            if ($checkStmt->num_rows == 0) {
-                                $indexnumber = $data[0];
-                                $semester = $data[1];
-                                $modulecode = $data[2];
-                                $modulename = $data[3];
-                                $results = $data[4];
-                                $stmtInsert->bind_param('sssss', $indexnumber, $semester, $modulecode, $modulename, $results);
-
-
-                                if ($stmtInsert->execute()) {
-                                    $dataInserted = true;
-                                }
-
-                                $stmtInsert->close();
-                            }
-                            $checkStmt->close();
-                        }
-                        fclose($handle);
-                    }
-
-                    if ($dataInserted) {
-                        echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
-                    } else {
-                        echo '<div style="text-align: center; margin-top: 20px;">No new data was inserted.</div>';
-                    }
-                }
-
-                $db->close();
-            } else {
-                echo '<div style="text-align: center; margin-top: 20px;">Error moving the uploaded file.</div>';
-            }
-        } else {
-            echo '<div style="text-align: center; margin-top: 20px;">No file was uploaded.</div>';
-        }
-    }
-    ?>
-
-
-    <div class=" wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container my-5">
-            <?php
-            include 'db.php';
-            echo "<div class='container my-5'>";
-            echo "<div class='container text-center'>";
-            echo "<div class='row justify-content-center'>";
-            echo "<div class='col-lg-6'>";
-            echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
-            echo '<form method="post">';
-            echo '<button type="submit" name="getresults" class="btn btn-primary">Get Results</button>';
-            echo '</form>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-
-            if (isset($_POST['getresults'])) {
-                echo "<h4 class='my-4'>Student Results</h4>";
-                echo "<table>";
-                echo "<tr class='text-primary'>
-                <th class='outresult'>Indexnumber</th>
-                <th class='outresult'>Semester</th>
-                <th class='outresult'>Modulecode</th>
-                <th class='outresult'>Modulename</th>
-                <th class='outresult'>Results</th>
-            </tr>";
-
-                // SQL query to fetch data from stupackdetails table
-                $query = "SELECT indexnumber, semester, modulecode, modulename, results FROM results";
-                $result = $conn->query($query);
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td class='showresult'>" . $row['indexnumber'] . "</td>";
-                        echo "<td class='showresult'>" . $row['semester'] . "</td>";
-                        echo "<td class='showresult'>" . $row['modulecode'] . "</td>";
-                        echo "<td class='showresult'>" . $row['modulename'] . "</td>";
-                        echo "<td class='showresult'>" . $row['results'] . "</td>";
-                        echo "<td class='showresult'>
-                        <form method='post'>
-                            <input type='hidden' name='change_result_indexnumber' value='" . $row['indexnumber'] . "'>
-                            <select name='change_result_column'>
-                                <option value='indexnumber'>Indexnumber</option>
-                                <option value='semester'>Semester</option>
-                                <option value='modulecode'>Modulecode</option>
-                                <option value='modulename'>Modulename </option>
-                                <option value='results'>Results</option>
-                                
-                            </select>
-                            <input type='text' name='new_result'>
-                            <button type='submit' name='update_result'>Update</button>
-                        </form>
-                    </td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='12'>No data found in the results table.</td></tr>";
-                }
-
-                echo "</table>";
-            }
-
-            if (isset($_POST['update_result'])) {
-                // Get the values from the form
-                $change_result_indexnumber = $_POST['change_result_indexnumber'];
-                $change_result_column = $_POST['change_result_column'];
-                $new_result = $_POST['new_result'];
-
-                // SQL query to update data in stupackdetails table
-                $update_query = "UPDATE results SET $change_result_column = ? WHERE indexnumber = ?";
-                $stmtUpdate = $conn->prepare($update_query);
-
-                if ($stmtUpdate) {
-                    $stmtUpdate->bind_param('ss', $new_result, $change_result_indexnumber);
-                    if ($stmtUpdate->execute()) {
-                        echo "Data updated successfully!";
-                    } else {
-                        echo "Error updating data: " . $stmtUpdate->error;
-                    }
-                    $stmtUpdate->close();
-                }
-            }
-            ?>
-        </div>
-    </div>
-
-
-    <!-- End Results CSV -->
-
-    <!-- Start Show Details CSV -->
     <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
         <div class="container">
             <div class="row g-4">
@@ -823,8 +573,6 @@ if (!isset($_SESSION['id'])) {
         </div>
     </div>
 
-    </div>
-
     <div class=" wow fadeInUp" data-wow-delay="0.1s">
         <div class="container my-3">
             <?php
@@ -843,6 +591,7 @@ if (!isset($_SESSION['id'])) {
             echo '</div>';
 
             if (isset($_POST['getdetails'])) {
+                echo "<button onclick='closeDetails()' id='closeDetailsBtn' class='btn btn-danger'>Close Details</button>";
                 echo "<h4 class='my-4'>Student Details</h4>";
                 echo "<table>";
                 echo "<tr class='text-primary'>
@@ -928,15 +677,265 @@ if (!isset($_SESSION['id'])) {
                     }
                     $stmtUpdate->close();
                 }
+                echo "<script>document.getElementById('closeDetailsBtn').style.display = 'none';</script>";
             }
             ?>
         </div>
     </div>
-    <!-- Start Show Details CSV -->
+    <script>
+        function closeDetails() {
+            document.querySelector('table').style.display = 'none';
+            document.getElementById('closeDetailsBtn').style.display = 'none';
+        }
+    </script>
+
+    <div class="container-fluid py-5 mb-3" style="background-color: #f2f2f2;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 9</h5>
+                            <p>Upload Student Results From Device .</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 10</h5>
+                            <p>The Upload Time Its Load The Page Just Refresh It.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 11</h5>
+                            <p>After Refresh You Get The Insertation Reply</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <i class="fa fa-space-shuttle" style="font-size:48px;color: #124c64"></i>
+                            <h5 class="mb-3">Instruction 12</h5>
+                            <p>Recheck The Inseration By Click The Get Results.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div>
+                <a href="https://convertio.co/xlsx-csv/" target="_blank">
+                    <button type="button" class="glow-on-hover">Click to Online Converter</button>
+                </a>
+            </div>
+        </center>
+    </div>
+
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <center>
+            <div class="upload">
+                <form action="studentupload.php" method="post" enctype="multipart/form-data">
+
+                    <div class="form-field">
+                        <label for="result_file">Upload Results CSV File: </label>
+                        <input type="file" name="result_file" id="result_file">
+                    </div>
 
 
+                    <div class="form-field">
+                        <input type="submit" name="submit_results_file" value="Upload Results CSV File">
+                    </div>
+                </form>
+            </div>
+        </center>
+    </div>
+    <?php
+    if (isset($_POST['submit_results_file'])) {
+        if (isset($_FILES['result_file'])) {
+            $file = $_FILES['result_file'];
+            $file_name = $file['name'];
+            $file_tmp = $file['tmp_name'];
 
-    <!-- Footer Start -->
+            $upload_directory = 'stuResults/';
+            $file_path = $upload_directory . $file_name;
+
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $db = new mysqli('localhost', 'root', '', 'stupack');
+
+                if ($db->connect_error) {
+                    die("Connection failed: " . $db->connect_error);
+                }
+
+                $queryInsert = "INSERT INTO results (indexnumber, semester, modulecode, modulename, results) VALUES (?, ?, ?, ?, ?)";
+                $stmtInsert = $db->prepare($queryInsert);
+
+                if ($stmtInsert) {
+                    $handle = fopen($file_path, "r");
+                    $firstRow = true;
+                    $dataInserted = false;
+
+                    if ($handle !== FALSE) {
+                        while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                            if ($firstRow) {
+                                $firstRow = false;
+                                continue;
+                            }
+
+                            $indexnumber = $data[0];
+                            $modulecode = $data[2];
+
+
+                            $checkQuery = "SELECT indexnumber FROM results WHERE indexnumber = ? AND modulecode = ?";
+                            $checkStmt = $db->prepare($checkQuery);
+                            $checkStmt->bind_param('ss', $indexnumber, $modulecode);
+                            $checkStmt->execute();
+                            $checkStmt->store_result();
+
+                            if ($checkStmt->num_rows == 0) {
+                                $indexnumber = $data[0];
+                                $semester = $data[1];
+                                $modulecode = $data[2];
+                                $modulename = $data[3];
+                                $results = $data[4];
+                                $stmtInsert->bind_param('sssss', $indexnumber, $semester, $modulecode, $modulename, $results);
+
+
+                                if ($stmtInsert->execute()) {
+                                    $dataInserted = true;
+                                }
+
+                                $stmtInsert->close();
+                            }
+                            $checkStmt->close();
+                        }
+                        fclose($handle);
+                    }
+
+                    if ($dataInserted) {
+                        echo '<div style="text-align: center; margin-top: 20px;">Data inserted successfully!</div>';
+                    } else {
+                        echo '<div style="text-align: center; margin-top: 20px;">No new data was inserted.</div>';
+                    }
+                }
+
+                $db->close();
+            } else {
+                echo '<div style="text-align: center; margin-top: 20px;">Error moving the uploaded file.</div>';
+            }
+        } else {
+            echo '<div style="text-align: center; margin-top: 20px;">No file was uploaded.</div>';
+        }
+    }
+    ?>
+
+
+    <div class=" wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container my-5">
+            <?php
+            include 'db.php';
+            echo "<div class='container my-5'>";
+            echo "<div class='container text-center'>";
+            echo "<div class='row justify-content-center'>";
+            echo "<div class='col-lg-6'>";
+            echo "<i class='bi bi-file-earmark-person' style='font-size: 5rem; color: #00A1A7;'></i>";
+            echo '<form method="post">';
+            echo '<button type="submit" name="getresults" class="btn btn-primary">Get Results</button>';
+            echo '</form>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+
+            if (isset($_POST['getresults'])) {
+                echo "<button onclick='closeResults()' id='closeResultsBtn' class='btn btn-danger'>Close Details</button>";
+                echo "<h4 class='my-4'>Student Results</h4>";
+                echo "<table>";
+                echo "<tr class='text-primary'>
+                <th class='outresult'>Indexnumber</th>
+                <th class='outresult'>Semester</th>
+                <th class='outresult'>Modulecode</th>
+                <th class='outresult'>Modulename</th>
+                <th class='outresult'>Results</th>
+            </tr>";
+
+
+                $query = "SELECT indexnumber, semester, modulecode, modulename, results FROM results";
+                $result = $conn->query($query);
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td class='showresult'>" . $row['indexnumber'] . "</td>";
+                        echo "<td class='showresult'>" . $row['semester'] . "</td>";
+                        echo "<td class='showresult'>" . $row['modulecode'] . "</td>";
+                        echo "<td class='showresult'>" . $row['modulename'] . "</td>";
+                        echo "<td class='showresult'>" . $row['results'] . "</td>";
+                        echo "<td class='showresult'>
+                        <form method='post'>
+                            <input type='hidden' name='change_result_indexnumber' value='" . $row['indexnumber'] . "'>
+                            <select name='change_result_column'>
+                                <option value='indexnumber'>Indexnumber</option>
+                                <option value='semester'>Semester</option>
+                                <option value='modulecode'>Modulecode</option>
+                                <option value='modulename'>Modulename </option>
+                                <option value='results'>Results</option>
+                                
+                            </select>
+                            <input type='text' name='new_result'>
+                            <button type='submit' name='update_result'>Update</button>
+                        </form>
+                    </td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='12'>No data found in the results table.</td></tr>";
+                }
+
+                echo "</table>";
+            }
+
+            if (isset($_POST['update_result'])) {
+
+                $change_result_indexnumber = $_POST['change_result_indexnumber'];
+                $change_result_column = $_POST['change_result_column'];
+                $new_result = $_POST['new_result'];
+
+
+                $update_query = "UPDATE results SET $change_result_column = ? WHERE indexnumber = ?";
+                $stmtUpdate = $conn->prepare($update_query);
+
+                if ($stmtUpdate) {
+                    $stmtUpdate->bind_param('ss', $new_result, $change_result_indexnumber);
+                    if ($stmtUpdate->execute()) {
+                        echo "Data updated successfully!";
+                    } else {
+                        echo "Error updating data: " . $stmtUpdate->error;
+                    }
+                    $stmtUpdate->close();
+                }
+                echo "<script>document.getElementById('closeResultsBtn').style.display = 'none';</script>";
+            }
+            ?>
+        </div>
+    </div>
+    <script>
+        function closeResults() {
+            document.querySelector('table').style.display = 'none';
+            document.getElementById('closeResultsBtn').style.display = 'none';
+        }
+    </script>
+
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
@@ -984,13 +983,13 @@ if (!isset($_SESSION['id'])) {
                             <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c2.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c4.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c5.jpg" alt="" />
                         </div>
                         <div class="col-4">
-                            <img class="img-fluid bg-light p-1" src="img/c1.jpg" alt="" />
+                            <img class="img-fluid bg-light p-1" src="img/c6.jpg" alt="" />
                         </div>
                     </div>
                 </div>

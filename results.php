@@ -110,7 +110,8 @@ if (!isset($_SESSION['indexnumber'])) {
       <div class="navbar-nav ms-auto p-4 p-lg-0">
         <a href="profile.php" class="nav-item nav-link">Profile</a>
         <a href="#" class="nav-item nav-link active">Results</a>
-        <a href="mailto.php" class="nav-item nav-link">Mail To</a>
+        <a href="mailto.php" class="nav-item nav-link">Modules</a>
+        <a href="preference.php" class="nav-item nav-link">Preferences</a>
       </div>
       <form method="post" action="">
         <button type="submit" name="logout" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Log Out <i
@@ -143,10 +144,10 @@ if (!isset($_SESSION['indexnumber'])) {
     $indexnumber = $_SESSION['indexnumber'];
     include 'db.php';
 
-    // SQL query to fetch unique semesters for the logged-in user
+
     $query = "SELECT DISTINCT semester FROM results WHERE indexnumber = '$indexnumber'";
 
-    // Execute the query
+
     $semesterResults = $conn->query($query);
     echo "<div class='container my-5'>";
     echo "<div class='container text-center'>";
@@ -188,20 +189,62 @@ if (!isset($_SESSION['indexnumber'])) {
               <th class='outtitle' >Module Code</th>
               <th class='outtitle'>Module Name</th>
               <th class='outtitle'>Result</th>
+              <th class='outtitle'>GPA</th>
           </tr>";
+
+        $totalGPA = 0;
+        $totalCredits = 0;
 
         while ($row = $results->fetch_assoc()) {
           echo "<tr >";
           echo "<td class='showtitle'>" . $row['modulecode'] . "</td>";
           echo "<td  class='showtitle'>" . $row['modulename'] . "</td>";
           echo "<td  class='showtitle'>" . $row['results'] . "</td>";
+
+          $lastDigit = substr($row['modulecode'], -1);
+          $grade = $row['results'];
+          $moduleGPA = intval($lastDigit) * getGradeGPA($grade);
+
+          echo "<td class='showtitle'>" . $moduleGPA . "</td>";
+          echo "</tr>";
+
+
+          $totalGPA += $moduleGPA;
+          $totalCredits += intval($lastDigit);
+
           echo "</tr>";
         }
+        $overallGPA = ($totalCredits > 0) ? ($totalGPA / $totalCredits) : 0;
 
+        echo "<tr>";
+        echo "<td colspan='3' class='showtitle text-end'><strong>Overall GPA:</strong></td>";
+        echo "<td class='showtitle'>" . number_format($overallGPA, 3) . "</td>";
+        echo "</tr>";
         echo "</table>";
       } else {
         echo "No results found for this semester.";
       }
+    }
+    function getGradeGPA($grade)
+    {
+
+      $gradeGPA = [
+        'A+' => 4.0,
+        'A' => 4.0,
+        'A-' => 3.7,
+        'B+' => 3.3,
+        'B' => 3.0,
+        'B-' => 2.7,
+        'C+' => 2.3,
+        'C' => 2.0,
+        'C-' => 1.7,
+        'D+' => 1.3,
+        'D' => 1.0,
+        'D-' => 0.7,
+        'F' => 0.0,
+      ];
+
+      return isset($gradeGPA[$grade]) ? $gradeGPA[$grade] : 0;
     }
     ?>
   </div>
@@ -254,13 +297,13 @@ if (!isset($_SESSION['indexnumber'])) {
               <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
             </div>
             <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="img/c2.jpg" alt="" />
+              <img class="img-fluid bg-light p-1" src="img/c4.jpg" alt="" />
             </div>
             <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="img/c3.jpg" alt="" />
+              <img class="img-fluid bg-light p-1" src="img/c5.jpg" alt="" />
             </div>
             <div class="col-4">
-              <img class="img-fluid bg-light p-1" src="img/c1.jpg" alt="" />
+              <img class="img-fluid bg-light p-1" src="img/c6.jpg" alt="" />
             </div>
           </div>
         </div>
